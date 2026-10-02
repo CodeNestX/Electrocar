@@ -8,7 +8,7 @@ export default function ArticleCard({
   article,
 }: ArticleCardProps) {
   return (
-    <article className="ev-card group overflow-hidden rounded-2xl">
+    <article dir="rtl" className="ev-card group overflow-hidden rounded-2xl">
 
       {/* Image */}
       <div className="relative h-56 overflow-hidden">

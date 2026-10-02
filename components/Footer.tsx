@@ -1,19 +1,31 @@
+"use client";
 
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Footer() {
+  const { language } = useLanguage();
+
+  const isFa = language === "fa";
+
   return (
-    <footer className="border-t border-white/5 bg-[#03070b]">
+    <footer className="border-t border-white/5 bg-[#091521]">
       <div className="site-container py-14">
 
         {/* Main Footer */}
-        <div className="grid gap-10 text-center md:grid-cols-2 lg:grid-cols-4 lg:text-right">
+        <div
+          className={`grid gap-10 text-center md:grid-cols-2 lg:grid-cols-4 ${
+            isFa ? "lg:text-right" : "lg:text-left"
+          }`}
+        >
 
           {/* Brand */}
           <div className="md:col-span-1">
             <Link
               href="/"
-              className="flex items-center justify-center gap-3 lg:justify-start"
+              className={`flex items-center justify-center gap-3 ${
+                isFa ? "lg:justify-start" : "lg:justify-start"
+              }`}
             >
               <div className="flex h-10 w-10 items-center justify-center">
                 <svg
@@ -46,45 +58,59 @@ export default function Footer() {
               </span>
             </Link>
 
-            <p className="mt-5 text-center text-sm leading-7 text-gray-500 lg:text-right">
-              مرجع اخبار، مقالات، بررسی و فناوری خودروهای برقی.
-              با ElectroCar دنیای حرکت الکتریکی را بهتر بشناسید.
+            {/* Brand Description */}
+            <p
+              className={`mt-5 text-center text-sm leading-7 text-gray-500 ${
+                isFa ? "lg:text-right" : "lg:text-left"
+              }`}
+            >
+              {isFa ? (
+                <>
+                  مرجع اخبار، مقالات، بررسی و فناوری خودروهای برقی.
+                  <br />
+                  با ElectroCar دنیای حرکت الکتریکی را بهتر بشناسید.
+                </>
+              ) : (
+                <>
+                  Your source for electric vehicle news, articles,
+                  reviews, and technology.
+                  <br />
+                  Discover the world of electric mobility with ElectroCar.
+                </>
+              )}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
             <h3 className="mb-5 font-bold text-white">
-              دسترسی سریع
+              {isFa ? "دسترسی سریع" : "Quick Links"}
             </h3>
 
-            <div className="flex flex-col items-center gap-3 text-sm text-gray-500 lg:items-start">
+            <div
+              className={`flex flex-col gap-3 text-sm text-gray-500 ${
+                isFa ? "items-center lg:items-start" : "items-center lg:items-start"
+              }`}
+            >
               <Link
                 href="/"
                 className="transition hover:text-[#39f77b]"
               >
-                صفحه اصلی
+                {isFa ? "صفحه اصلی" : "Home"}
               </Link>
 
               <Link
                 href="/news"
                 className="transition hover:text-[#39f77b]"
               >
-                آخرین اخبار
-              </Link>
-
-              <Link
-                href="/cars"
-                className="transition hover:text-[#39f77b]"
-              >
-                خودروهای برقی
+                {isFa ? "آخرین اخبار" : "Latest News"}
               </Link>
 
               <Link
                 href="/articles"
                 className="transition hover:text-[#39f77b]"
               >
-                مقالات
+                {isFa ? "مقالات" : "Articles"}
               </Link>
             </div>
           </div>
@@ -92,36 +118,33 @@ export default function Footer() {
           {/* Categories */}
           <div>
             <h3 className="mb-5 font-bold text-white">
-              دسته‌بندی‌ها
+              {isFa ? "دسته‌بندی‌ها" : "Categories"}
             </h3>
 
-            <div className="flex flex-col items-center gap-3 text-sm text-gray-500 lg:items-start">
+            <div
+              className={`flex flex-col gap-3 text-sm text-gray-500 ${
+                isFa ? "items-center lg:items-start" : "items-center lg:items-start"
+              }`}
+            >
               <Link
                 href="/news"
                 className="transition hover:text-[#39f77b]"
               >
-                اخبار جهان
+                {isFa ? "اخبار جهان" : "World News"}
               </Link>
 
               <Link
                 href="/charging"
                 className="transition hover:text-[#39f77b]"
               >
-                باتری و شارژ
+                {isFa ? "باتری و شارژ" : "Battery & Charging"}
               </Link>
 
               <Link
                 href="/technology"
                 className="transition hover:text-[#39f77b]"
               >
-                فناوری
-              </Link>
-
-              <Link
-                href="/cars"
-                className="transition hover:text-[#39f77b]"
-              >
-                بررسی خودرو
+                {isFa ? "فناوری" : "Technology"}
               </Link>
             </div>
           </div>
@@ -132,20 +155,35 @@ export default function Footer() {
               href="/about"
               className="mb-5 block font-bold text-white transition hover:text-[#39f77b]"
             >
-              درباره ElectroCar
+              {isFa ? "درباره ElectroCar" : "About ElectroCar"}
             </Link>
 
-            <p className="text-center text-sm leading-7 text-gray-500 lg:text-right">
-              ElectroCar یک پلتفرم محتوایی با تمرکز بر خودروهای
-              الکتریکی، فناوری‌های نوین و آینده صنعت حمل‌ونقل است.
+            <p
+              className={`text-center text-sm leading-7 text-gray-500 ${
+                isFa ? "lg:text-right" : "lg:text-left"
+              }`}
+            >
+              {isFa ? (
+                <>
+                  ElectroCar یک پلتفرم محتوایی با تمرکز بر خودروهای
+                  الکتریکی، فناوری‌های نوین و آینده صنعت حمل‌ونقل است.
+                </>
+              ) : (
+                <>
+                  ElectroCar is a content platform focused on electric
+                  vehicles, emerging technologies, and the future of
+                  transportation.
+                </>
+              )}
             </p>
           </div>
-
         </div>
 
         {/* Copyright */}
         <div className="mt-12 border-t border-white/5 pt-6 text-center text-xs text-gray-600">
-          © {new Date().getFullYear()} ElectroCar — تمامی حقوق محفوظ است.
+          {isFa
+            ? `© ${new Date().getFullYear()} ElectroCar — تمامی حقوق محفوظ است.`
+            : `© ${new Date().getFullYear()} ElectroCar — All rights reserved.`}
         </div>
 
       </div>

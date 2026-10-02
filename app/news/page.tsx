@@ -1,7 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsCard from "@/components/NewsCard";
-import SectionTitle from "@/components/SectionTitle";
 import { news } from "@/data/news";
 
 const categories = [
@@ -14,88 +16,84 @@ const categories = [
 ];
 
 export default function NewsPage() {
-  return (
-    <div className="min-h-screen bg-[#050b11]">
+  const [activeCategory, setActiveCategory] = useState("همه");
 
+  const filteredNews =
+    activeCategory === "همه"
+      ? news
+      : news.filter((item) => item.category === activeCategory);
+
+  return (
+    <div className="min-h-screen bg-[#050b11] text-white">
       <Header />
 
-      <main>
+      <main dir="rtl" className="mx-auto min-h-[70vh] max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mb-10 text-center">
+          <span className="mb-3 inline-block text-sm font-semibold text-green-400">
+            تازه‌های دنیای خودرو
+          </span>
+          <h1 className="text-3xl font-extrabold sm:text-4xl">
+            اخبار خودروهای برقی
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-8 text-gray-400 sm:text-base">
+            جدیدترین خبرها، بررسی‌ها و تحولات صنعت خودروهای الکتریکی
+          </p>
+        </div>
 
-        {/* Page Header */}
-        <section className="border-b border-white/5 bg-gradient-to-b from-[#08151f] to-[#050b11] py-20">
+        {/* فیلتر دسته‌بندی‌ها */}
+        <div className="mb-8 flex flex-wrap justify-center gap-3">
+          {categories.map((category) => {
+            const isActive = activeCategory === category;
 
-          <div className="site-container">
+            return (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setActiveCategory(category)}
+                className={`rounded-full border px-5 py-2.5 text-sm transition-all duration-200 ${
+                  isActive
+                    ? "border-green-400 bg-green-400 text-[#050b11] font-bold shadow-lg shadow-cyan-400/20"
+                    : "border-white/10 bg-white/[0.03] text-gray-300 hover:border-green-400/60 hover:text-green-300"
+                }`}
+              >
+                {category}
+              </button>
+            );
+          })}
+        </div>
 
-            <div className="max-w-3xl">
+        <div className="mb-6 flex items-center justify-between border-b border-white/10 pb-4">
+          <h2 className="text-lg font-bold">
+            {activeCategory === "همه" ? "همه اخبار" : activeCategory}
+          </h2>
+          <span className="text-sm text-gray-400">
+            {filteredNews.length} خبر
+          </span>
+        </div>
 
-              <div className="mb-5 flex items-center gap-3 text-sm text-[#39f77b]">
-                <span className="h-2 w-2 rounded-full bg-[#39f77b]" />
-                ElectroCar News
-              </div>
-
-              <h1 className="text-4xl font-extrabold leading-[1.5] text-white md:text-5xl">
-                آخرین اخبار
-                <span className="text-[#39f77b]"> خودروهای برقی</span>
-              </h1>
-
-              <p className="mt-6 max-w-2xl text-sm leading-8 text-gray-500 md:text-base">
-                جدیدترین اخبار، رویدادها، فناوری‌ها و تحولات دنیای
-                خودروهای الکتریکی را در ElectroCar دنبال کنید.
-              </p>
-
-            </div>
-
+        {filteredNews.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredNews.map((item) => (
+              <NewsCard key={item.id} news={item} />
+            ))}
           </div>
-
-        </section>
-
-        {/* News */}
-        <section className="section-space">
-
-          <div className="site-container">
-
-            <SectionTitle
-              title="همه اخبار"
-              description="آخرین مطالب منتشرشده در ElectroCar"
-            />
-
-            {/* Categories */}
-            <div className="mb-10 flex gap-2 overflow-x-auto pb-2">
-
-              {categories.map((category, index) => (
-                <button
-                  key={category}
-                  className={`shrink-0 rounded-full border px-5 py-2.5 text-xs font-semibold transition ${
-                    index === 0
-                      ? "border-[#39f77b] bg-[#39f77b] text-[#06100a]"
-                      : "border-white/10 bg-white/[0.02] text-gray-400 hover:border-[#39f77b]/40 hover:text-[#39f77b]"
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-
-            </div>
-
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-
-              {news.map((item) => (
-                <NewsCard
-                  key={item.id}
-                  news={item}
-                />
-              ))}
-
-            </div>
-
+        ) : (
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] py-16 text-center">
+            <p className="text-gray-300">
+              خبری در این دسته‌بندی وجود ندارد.
+            </p>
+            <button
+              type="button"
+              onClick={() => setActiveCategory("همه")}
+              className="mt-5 rounded-full bg-cyan-400 px-5 py-2 text-sm font-bold text-[#050b11] transition hover:bg-cyan-300"
+            >
+              نمایش همه اخبار
+            </button>
           </div>
-
-        </section>
-
+        )}
       </main>
 
       <Footer />
-
     </div>
   );
 }

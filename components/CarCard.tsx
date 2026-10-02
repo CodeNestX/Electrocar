@@ -1,10 +1,36 @@
+"use client";
+
 import { Car } from "@/types/car";
+import { useLanguage } from "@/context/LanguageContext";
+import { localizeCar } from "@/data/carsI18n";
 
 interface CarCardProps {
   car: Car;
 }
 
-export default function CarCard({ car }: CarCardProps) {
+const ui = {
+  fa: {
+    model: "مدل",
+    power: "قدرت",
+    acceleration: "شتاب",
+    battery: "باتری",
+    view: "مشاهده خودرو",
+  },
+  en: {
+    model: "model",
+    power: "Power",
+    acceleration: "Acceleration",
+    battery: "Battery",
+    view: "View car",
+  },
+};
+
+export default function CarCard({ car: rawCar }: CarCardProps) {
+  const { language } = useLanguage();
+  const t = ui[language];
+
+  const car = localizeCar(rawCar, language);
+
   return (
     <article className="ev-card group overflow-hidden rounded-2xl">
 
@@ -20,12 +46,12 @@ export default function CarCard({ car }: CarCardProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#050b11] via-transparent to-transparent" />
 
         {/* Brand */}
-        <div className="absolute right-4 top-4 rounded-full border border-white/10 bg-black/40 px-3 py-1.5 text-[10px] font-bold text-white backdrop-blur-md">
+        <div className="absolute start-4 top-4 rounded-full border border-white/10 bg-black/40 px-3 py-1.5 text-[10px] font-bold text-white backdrop-blur-md">
           {car.brand}
         </div>
 
         {/* Type */}
-        <div className="absolute bottom-4 right-4 rounded-full bg-[#39f77b] px-3 py-1.5 text-[10px] font-bold text-[#06100a]">
+        <div className="absolute bottom-4 start-4 rounded-full bg-[#39f77b] px-3 py-1.5 text-[10px] font-bold text-[#06100a]">
           {car.type}
         </div>
 
@@ -42,7 +68,9 @@ export default function CarCard({ car }: CarCardProps) {
             </h2>
 
             <p className="mt-1 text-xs text-gray-600">
-              مدل {car.year}
+              {language === "fa"
+                ? `${t.model} ${car.year}`
+                : `${car.year} ${t.model}`}
             </p>
           </div>
 
@@ -57,7 +85,7 @@ export default function CarCard({ car }: CarCardProps) {
 
           <div className="text-center">
             <span className="block text-[10px] text-gray-600">
-              قدرت
+              {t.power}
             </span>
 
             <span className="mt-1 block text-[11px] font-bold text-gray-300">
@@ -67,7 +95,7 @@ export default function CarCard({ car }: CarCardProps) {
 
           <div className="border-x border-white/5 text-center">
             <span className="block text-[10px] text-gray-600">
-              شتاب
+              {t.acceleration}
             </span>
 
             <span className="mt-1 block text-[11px] font-bold text-gray-300">
@@ -77,7 +105,7 @@ export default function CarCard({ car }: CarCardProps) {
 
           <div className="text-center">
             <span className="block text-[10px] text-gray-600">
-              باتری
+              {t.battery}
             </span>
 
             <span className="mt-1 block text-[11px] font-bold text-gray-300">
@@ -101,7 +129,7 @@ export default function CarCard({ car }: CarCardProps) {
             href={`/cars/${car.slug}`}
             className="rounded-xl bg-[#39f77b] px-4 py-2.5 text-[11px] font-extrabold text-[#06100a] transition hover:bg-[#66ff9a]"
           >
-            مشاهده خودرو
+            {t.view}
           </a>
 
         </div>

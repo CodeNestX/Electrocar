@@ -6,7 +6,7 @@ interface NewsCardProps {
 
 export default function NewsCard({ news }: NewsCardProps) {
   return (
-    <article className="ev-card group overflow-hidden rounded-2xl">
+    <article dir="rtl" className="ev-card group overflow-hidden rounded-2xl">
 
       <div className="relative h-56 overflow-hidden">
 

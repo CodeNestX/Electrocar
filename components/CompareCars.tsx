@@ -4,15 +4,83 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { cars } from "@/data/cars";
+import { localizeCar } from "@/data/carsI18n";
+import { useLanguage } from "@/context/LanguageContext";
+
+const ui = {
+  fa: {
+    selectLabel: "انتخاب خودرو",
+    selectTitle: "خودروهای مورد نظر خود را انتخاب کنید",
+    selectHint: "حداقل ۲ و حداکثر ۳ خودرو را برای مقایسه انتخاب کنید.",
+    addCar: "+ افزودن خودرو",
+    carN: "خودرو",
+    details: "مشاهده جزئیات ←",
+    remove: "حذف",
+    tableLabel: "جدول مقایسه",
+    tableTitle: "مقایسه مشخصات فنی",
+    specHeader: "مشخصات",
+    featuresLabel: "ویژگی‌ها",
+    featuresTitle: "امکانات و ویژگی‌های خودرو",
+    note: "توجه:",
+    disclaimer:
+      "اطلاعات خودروها در نسخه فعلی برای طراحی و نمایش رابط کاربری به‌صورت نمونه قرار داده شده‌اند. برای نسخه نهایی پروژه، مشخصات فنی و قیمت‌ها باید با اطلاعات رسمی و بازار هدف تطبیق داده شوند.",
+    rows: {
+      brand: "برند",
+      type: "نوع خودرو",
+      year: "مدل",
+      range: "برد حرکتی",
+      power: "قدرت موتور",
+      acceleration: "شتاب ۰ تا ۱۰۰",
+      battery: "ظرفیت باتری",
+      charging: "شارژ سریع",
+      topSpeed: "حداکثر سرعت",
+      price: "قیمت",
+    },
+  },
+  en: {
+    selectLabel: "Select cars",
+    selectTitle: "Choose the cars you want to compare",
+    selectHint: "Select at least 2 and at most 3 cars to compare.",
+    addCar: "+ Add car",
+    carN: "Car",
+    details: "View details →",
+    remove: "Remove",
+    tableLabel: "Comparison table",
+    tableTitle: "Technical specs comparison",
+    specHeader: "Specification",
+    featuresLabel: "Features",
+    featuresTitle: "Car features and options",
+    note: "Note:",
+    disclaimer:
+      "The car information in the current version is sample data for UI design and display. For the final version of the project, the specs and prices must be matched with official information and the target market.",
+    rows: {
+      brand: "Brand",
+      type: "Car type",
+      year: "Model year",
+      range: "Driving range",
+      power: "Motor power",
+      acceleration: "0–100 km/h",
+      battery: "Battery capacity",
+      charging: "Fast charging",
+      topSpeed: "Top speed",
+      price: "Price",
+    },
+  },
+};
 
 export default function CompareCars() {
+  const { language } = useLanguage();
+  const t = ui[language];
+
   const [selectedCars, setSelectedCars] = useState<string[]>([
     cars[0]?.slug ?? "",
     cars[2]?.slug ?? "",
   ]);
 
+  const localizedCars = cars.map((car) => localizeCar(car, language));
+
   const getCar = (slug: string) => {
-    return cars.find((car) => car.slug === slug);
+    return localizedCars.find((car) => car.slug === slug);
   };
 
   const addCar = () => {
@@ -40,46 +108,16 @@ export default function CompareCars() {
   };
 
   const comparisonRows = [
-    {
-      label: "برند",
-      key: "brand",
-    },
-    {
-      label: "نوع خودرو",
-      key: "type",
-    },
-    {
-      label: "مدل",
-      key: "year",
-    },
-    {
-      label: "برد حرکتی",
-      key: "range",
-    },
-    {
-      label: "قدرت موتور",
-      key: "power",
-    },
-    {
-      label: "شتاب ۰ تا ۱۰۰",
-      key: "acceleration",
-    },
-    {
-      label: "ظرفیت باتری",
-      key: "battery",
-    },
-    {
-      label: "شارژ سریع",
-      key: "charging",
-    },
-    {
-      label: "حداکثر سرعت",
-      key: "topSpeed",
-    },
-    {
-      label: "قیمت",
-      key: "price",
-    },
+    { label: t.rows.brand, key: "brand" },
+    { label: t.rows.type, key: "type" },
+    { label: t.rows.year, key: "year" },
+    { label: t.rows.range, key: "range" },
+    { label: t.rows.power, key: "power" },
+    { label: t.rows.acceleration, key: "acceleration" },
+    { label: t.rows.battery, key: "battery" },
+    { label: t.rows.charging, key: "charging" },
+    { label: t.rows.topSpeed, key: "topSpeed" },
+    { label: t.rows.price, key: "price" },
   ];
 
   return (
@@ -88,15 +126,15 @@ export default function CompareCars() {
       <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="mb-2 text-sm font-semibold text-[#39f77b]">
-            انتخاب خودرو
+            {t.selectLabel}
           </p>
 
           <h2 className="text-2xl font-bold sm:text-3xl">
-            خودروهای مورد نظر خود را انتخاب کنید
+            {t.selectTitle}
           </h2>
 
           <p className="mt-2 text-sm text-gray-500">
-            حداقل ۲ و حداکثر ۳ خودرو را برای مقایسه انتخاب کنید.
+            {t.selectHint}
           </p>
         </div>
 
@@ -105,7 +143,7 @@ export default function CompareCars() {
             onClick={addCar}
             className="rounded-xl border border-[#39f77b]/30 bg-[#39f77b]/10 px-5 py-3 text-sm font-semibold text-[#39f77b] transition hover:bg-[#39f77b]/20"
           >
-            + افزودن خودرو
+            {t.addCar}
           </button>
         )}
       </div>
@@ -140,15 +178,15 @@ export default function CompareCars() {
 
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f16] via-transparent to-transparent" />
 
-                <div className="absolute right-4 top-4 rounded-full border border-white/10 bg-black/60 px-3 py-1 text-xs text-gray-300 backdrop-blur">
-                  خودرو {index + 1}
+                <div className="absolute start-4 top-4 rounded-full border border-white/10 bg-black/60 px-3 py-1 text-xs text-gray-300 backdrop-blur">
+                  {t.carN} {index + 1}
                 </div>
               </div>
 
               <div className="p-5">
                 {/* Select */}
                 <label className="mb-2 block text-xs text-gray-500">
-                  انتخاب خودرو
+                  {t.selectLabel}
                 </label>
 
                 <select
@@ -156,7 +194,7 @@ export default function CompareCars() {
                   onChange={(e) => changeCar(index, e.target.value)}
                   className="w-full rounded-xl border border-white/10 bg-[#121722] px-4 py-3 text-sm text-white outline-none transition focus:border-[#39f77b]/50"
                 >
-                  {cars.map((item) => (
+                  {localizedCars.map((item) => (
                     <option
                       key={item.slug}
                       value={item.slug}
@@ -187,7 +225,7 @@ export default function CompareCars() {
                     href={`/cars/${car.slug}`}
                     className="text-sm font-medium text-[#39f77b] transition hover:text-white"
                   >
-                    مشاهده جزئیات ←
+                    {t.details}
                   </Link>
 
                   {selectedCars.length > 2 && (
@@ -195,7 +233,7 @@ export default function CompareCars() {
                       onClick={() => removeCar(slug)}
                       className="text-sm text-red-400 transition hover:text-red-300"
                     >
-                      حذف
+                      {t.remove}
                     </button>
                   )}
                 </div>
@@ -209,22 +247,22 @@ export default function CompareCars() {
       <div className="mt-14">
         <div className="mb-6">
           <p className="mb-2 text-sm font-semibold text-[#39f77b]">
-            جدول مقایسه
+            {t.tableLabel}
           </p>
 
           <h2 className="text-2xl font-bold sm:text-3xl">
-            مقایسه مشخصات فنی
+            {t.tableTitle}
           </h2>
         </div>
 
         {/* Desktop / horizontal table */}
         <div className="overflow-hidden rounded-3xl border border-white/10 bg-[#0b0f16]">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] border-collapse text-right">
+            <table className="w-full min-w-[760px] border-collapse text-start">
               <thead>
                 <tr className="border-b border-white/10 bg-white/[0.02]">
-                  <th className="w-44 px-5 py-5 text-sm font-semibold text-gray-400">
-                    مشخصات
+                  <th className="w-44 px-5 py-5 text-start text-sm font-semibold text-gray-400">
+                    {t.specHeader}
                   </th>
 
                   {selectedCars.map((slug) => {
@@ -292,11 +330,11 @@ export default function CompareCars() {
       <div className="mt-14">
         <div className="mb-6">
           <p className="mb-2 text-sm font-semibold text-[#39f77b]">
-            ویژگی‌ها
+            {t.featuresLabel}
           </p>
 
           <h2 className="text-2xl font-bold sm:text-3xl">
-            امکانات و ویژگی‌های خودرو
+            {t.featuresTitle}
           </h2>
         </div>
 
@@ -348,11 +386,9 @@ export default function CompareCars() {
       {/* Notice */}
       <div className="mt-12 rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-5 text-sm leading-7 text-gray-400">
         <span className="font-semibold text-yellow-400">
-          توجه:
+          {t.note}
         </span>{" "}
-        اطلاعات خودروها در نسخه فعلی برای طراحی و نمایش رابط کاربری به‌صورت
-        نمونه قرار داده شده‌اند. برای نسخه نهایی پروژه، مشخصات فنی و قیمت‌ها
-        باید با اطلاعات رسمی و بازار هدف تطبیق داده شوند.
+        {t.disclaimer}
       </div>
     </section>
   );

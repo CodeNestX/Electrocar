@@ -1,17 +1,38 @@
+"use client";
+
 import SectionTitle from "./SectionTitle";
 import NewsCard from "./NewsCard";
 import { news } from "@/data/news";
+import { useLanguage } from "@/context/LanguageContext";
+
+const ui = {
+  fa: {
+    title: "آخرین اخبار",
+    description:
+      "تازه‌ترین اخبار، رویدادها و تحولات دنیای خودروهای برقی",
+    link: "مشاهده همه اخبار",
+  },
+  en: {
+    title: "Latest News",
+    description:
+      "The latest news, events, and developments from the world of electric cars",
+    link: "View all news",
+  },
+};
 
 export default function NewsSection() {
+  const { language } = useLanguage();
+  const t = ui[language];
+
   return (
     <section className="section-space">
 
       <div className="site-container">
 
         <SectionTitle
-          title="آخرین اخبار"
-          description="تازه‌ترین اخبار، رویدادها و تحولات دنیای خودروهای برقی"
-          linkText="مشاهده همه اخبار"
+          title={t.title}
+          description={t.description}
+          linkText={t.link}
           linkHref="/news"
         />
 

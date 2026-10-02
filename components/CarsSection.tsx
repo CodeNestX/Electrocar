@@ -1,4 +1,7 @@
+"use client";
+
 import SectionTitle from "./SectionTitle";
+import { useLanguage } from "@/context/LanguageContext";
 
 const cars = [
   {
@@ -33,15 +36,39 @@ const cars = [
   },
 ];
 
+const ui = {
+  fa: {
+    title: "خودروهای برقی محبوب",
+    description: "نگاهی سریع به مشخصات برخی از خودروهای الکتریکی محبوب",
+    link: "مشاهده همه خودروها",
+    range: "برد",
+    power: "قدرت",
+    acceleration: "شتاب",
+    details: "مشاهده جزئیات +",
+  },
+  en: {
+    title: "Popular Electric Cars",
+    description: "A quick look at the specs of some popular electric cars",
+    link: "View all cars",
+    range: "Range",
+    power: "Power",
+    acceleration: "Acceleration",
+    details: "View details +",
+  },
+};
+
 export default function CarsSection() {
+  const { language } = useLanguage();
+  const t = ui[language];
+
   return (
     <section className="pb-20">
       <div className="site-container">
 
         <SectionTitle
-          title="خودروهای برقی محبوب"
-          description="نگاهی سریع به مشخصات برخی از خودروهای الکتریکی محبوب"
-          linkText="مشاهده همه خودروها"
+          title={t.title}
+          description={t.description}
+          linkText={t.link}
           linkHref="/cars"
         />
 
@@ -60,7 +87,7 @@ export default function CarsSection() {
 
                 <div className="absolute inset-0 bg-gradient-to-t from-[#08131e] via-transparent to-transparent" />
 
-                <div className="absolute right-4 top-4 rounded-full border border-white/10 bg-black/40 px-3 py-1 text-xs text-gray-300 backdrop-blur-md">
+                <div className="absolute start-4 top-4 rounded-full border border-white/10 bg-black/40 px-3 py-1 text-xs text-gray-300 backdrop-blur-md">
                   {car.brand}
                 </div>
               </div>
@@ -81,7 +108,7 @@ export default function CarsSection() {
 
                   <div className="rounded-xl bg-white/[0.03] p-3 text-center">
                     <div className="text-[10px] text-gray-500">
-                      برد
+                      {t.range}
                     </div>
                     <div className="mt-1 text-sm font-bold text-[#39f77b]">
                       {car.range}
@@ -90,7 +117,7 @@ export default function CarsSection() {
 
                   <div className="rounded-xl bg-white/[0.03] p-3 text-center">
                     <div className="text-[10px] text-gray-500">
-                      قدرت
+                      {t.power}
                     </div>
                     <div className="mt-1 text-sm font-bold text-white">
                       {car.power}
@@ -99,7 +126,7 @@ export default function CarsSection() {
 
                   <div className="rounded-xl bg-white/[0.03] p-3 text-center">
                     <div className="text-[10px] text-gray-500">
-                      شتاب
+                      {t.acceleration}
                     </div>
                     <div className="mt-1 text-sm font-bold text-white">
                       {car.acceleration}
@@ -112,7 +139,7 @@ export default function CarsSection() {
                   href="/cars"
                   className="mt-5 flex items-center justify-center rounded-xl border border-[#39f77b]/20 py-3 text-xs font-bold text-[#39f77b] transition hover:bg-[#39f77b] hover:text-[#06100a]"
                 >
-                  مشاهده جزئیات +
+                  {t.details}
                 </a>
 
               </div>

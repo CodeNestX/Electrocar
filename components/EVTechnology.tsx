@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+
+type Language = "fa" | "en";
 
 type Technology = {
   id: string;
@@ -11,122 +14,313 @@ type Technology = {
   details: string[];
 };
 
-const technologies: Technology[] = [
-  {
-    id: "battery",
-    title: "باتری",
-    subtitle: "قلب انرژی خودرو",
-    icon: "▣",
-    description:
-      "باتری یکی از مهم‌ترین بخش‌های خودروهای برقی است. انرژی الکتریکی مورد نیاز موتور و بسیاری از سیستم‌های خودرو در باتری ذخیره می‌شود.",
-    details: [
-      "بسیاری از خودروهای مدرن از باتری‌های لیتیوم-یونی استفاده می‌کنند.",
-      "ظرفیت باتری معمولاً با kWh بیان می‌شود.",
-      "سیستم مدیریت باتری وضعیت سلول‌ها و دمای آن‌ها را کنترل می‌کند.",
-      "دما، نحوه شارژ و الگوی استفاده می‌توانند روی عملکرد باتری تأثیر بگذارند.",
-    ],
-  },
-  {
-    id: "motor",
-    title: "موتور الکتریکی",
-    subtitle: "تبدیل انرژی به حرکت",
-    icon: "⚡",
-    description:
-      "موتور الکتریکی انرژی ذخیره‌شده در باتری را به نیروی مکانیکی تبدیل می‌کند. یکی از ویژگی‌های مهم موتورهای الکتریکی، ارائه گشتاور بالا از دورهای پایین است.",
-    details: [
-      "موتورهای مختلفی مانند PMSM و القایی در خودروهای برقی استفاده می‌شوند.",
-      "خودرو می‌تواند یک یا چند موتور الکتریکی داشته باشد.",
-      "موتورهای دوگانه امکان ایجاد سیستم چهارچرخ محرک را فراهم می‌کنند.",
-      "کنترل الکترونیکی موتور نقش مهمی در بازده و عملکرد خودرو دارد.",
-    ],
-  },
-  {
-    id: "bms",
-    title: "سیستم BMS",
-    subtitle: "مدیریت هوشمند باتری",
-    icon: "◉",
-    description:
-      "Battery Management System یا BMS وظیفه نظارت و مدیریت باتری را بر عهده دارد و به حفظ عملکرد، ایمنی و شرایط مناسب سلول‌های باتری کمک می‌کند.",
-    details: [
-      "نظارت بر ولتاژ سلول‌ها",
-      "کنترل دمای باتری",
-      "مدیریت وضعیت شارژ باتری",
-      "کمک به محافظت از باتری در شرایط غیرعادی",
-    ],
-  },
-  {
-    id: "regen",
-    title: "ترمز احیاکننده",
-    subtitle: "بازگرداندن انرژی",
-    icon: "↻",
-    description:
-      "در سیستم ترمز احیاکننده، هنگام کاهش سرعت بخشی از انرژی جنبشی خودرو می‌تواند به انرژی الکتریکی تبدیل شده و دوباره به باتری منتقل شود.",
-    details: [
-      "در زمان کاهش سرعت، موتور می‌تواند مانند یک ژنراتور عمل کند.",
-      "انرژی حاصل می‌تواند به باتری بازگردد.",
-      "این سیستم می‌تواند نیاز به استفاده از ترمز اصطکاکی را کاهش دهد.",
-      "میزان بازیابی انرژی به شرایط رانندگی و طراحی خودرو بستگی دارد.",
-    ],
-  },
-  {
-    id: "adas",
-    title: "ADAS",
-    subtitle: "سیستم‌های کمک‌راننده",
-    icon: "◎",
-    description:
-      "سیستم‌های پیشرفته کمک‌راننده مجموعه‌ای از دوربین‌ها، رادارها و نرم‌افزارها هستند که برای کمک به راننده در شرایط مختلف طراحی شده‌اند.",
-    details: [
-      "هشدار خروج از خط",
-      "کروز کنترل تطبیقی",
-      "ترمز اضطراری خودکار",
-      "تشخیص خودروها و موانع اطراف",
-    ],
-  },
-  {
-    id: "software",
-    title: "نرم‌افزار خودرو",
-    subtitle: "خودرویی که به‌روزرسانی می‌شود",
-    icon: "</>",
-    description:
-      "نرم‌افزار در خودروهای مدرن نقش بسیار مهمی دارد. بسیاری از قابلیت‌های خودرو توسط نرم‌افزار کنترل می‌شوند و برخی سازندگان امکان به‌روزرسانی از راه دور را فراهم کرده‌اند.",
-    details: [
-      "کنترل سیستم‌های خودرو",
-      "مدیریت انرژی",
-      "بهبود عملکرد سیستم‌ها",
-      "به‌روزرسانی نرم‌افزاری از راه دور در برخی مدل‌ها",
-    ],
-  },
-];
+const technologies: Record<Language, Technology[]> = {
+  fa: [
+    {
+      id: "battery",
+      title: "باتری",
+      subtitle: "قلب انرژی خودرو",
+      icon: "▣",
+      description:
+        "باتری یکی از مهم‌ترین بخش‌های خودروهای برقی است. انرژی الکتریکی مورد نیاز موتور و بسیاری از سیستم‌های خودرو در باتری ذخیره می‌شود.",
+      details: [
+        "بسیاری از خودروهای مدرن از باتری‌های لیتیوم-یونی استفاده می‌کنند.",
+        "ظرفیت باتری معمولاً با kWh بیان می‌شود.",
+        "سیستم مدیریت باتری وضعیت سلول‌ها و دمای آن‌ها را کنترل می‌کند.",
+        "دما، نحوه شارژ و الگوی استفاده می‌توانند روی عملکرد باتری تأثیر بگذارند.",
+      ],
+    },
+    {
+      id: "motor",
+      title: "موتور الکتریکی",
+      subtitle: "تبدیل انرژی به حرکت",
+      icon: "⚡",
+      description:
+        "موتور الکتریکی انرژی ذخیره‌شده در باتری را به نیروی مکانیکی تبدیل می‌کند. یکی از ویژگی‌های مهم موتورهای الکتریکی، ارائه گشتاور بالا از دورهای پایین است.",
+      details: [
+        "موتورهای مختلفی مانند PMSM و القایی در خودروهای برقی استفاده می‌شوند.",
+        "خودرو می‌تواند یک یا چند موتور الکتریکی داشته باشد.",
+        "موتورهای دوگانه امکان ایجاد سیستم چهارچرخ محرک را فراهم می‌کنند.",
+        "کنترل الکترونیکی موتور نقش مهمی در بازده و عملکرد خودرو دارد.",
+      ],
+    },
+    {
+      id: "bms",
+      title: "سیستم BMS",
+      subtitle: "مدیریت هوشمند باتری",
+      icon: "◉",
+      description:
+        "Battery Management System یا BMS وظیفه نظارت و مدیریت باتری را بر عهده دارد و به حفظ عملکرد، ایمنی و شرایط مناسب سلول‌های باتری کمک می‌کند.",
+      details: [
+        "نظارت بر ولتاژ سلول‌ها",
+        "کنترل دمای باتری",
+        "مدیریت وضعیت شارژ باتری",
+        "کمک به محافظت از باتری در شرایط غیرعادی",
+      ],
+    },
+    {
+      id: "regen",
+      title: "ترمز احیاکننده",
+      subtitle: "بازگرداندن انرژی",
+      icon: "↻",
+      description:
+        "در سیستم ترمز احیاکننده، هنگام کاهش سرعت بخشی از انرژی جنبشی خودرو می‌تواند به انرژی الکتریکی تبدیل شده و دوباره به باتری منتقل شود.",
+      details: [
+        "در زمان کاهش سرعت، موتور می‌تواند مانند یک ژنراتور عمل کند.",
+        "انرژی حاصل می‌تواند به باتری بازگردد.",
+        "این سیستم می‌تواند نیاز به استفاده از ترمز اصطکاکی را کاهش دهد.",
+        "میزان بازیابی انرژی به شرایط رانندگی و طراحی خودرو بستگی دارد.",
+      ],
+    },
+    {
+      id: "adas",
+      title: "ADAS",
+      subtitle: "سیستم‌های کمک‌راننده",
+      icon: "◎",
+      description:
+        "سیستم‌های پیشرفته کمک‌راننده مجموعه‌ای از دوربین‌ها، رادارها و نرم‌افزارها هستند که برای کمک به راننده در شرایط مختلف طراحی شده‌اند.",
+      details: [
+        "هشدار خروج از خط",
+        "کروز کنترل تطبیقی",
+        "ترمز اضطراری خودکار",
+        "تشخیص خودروها و موانع اطراف",
+      ],
+    },
+    {
+      id: "software",
+      title: "نرم‌افزار خودرو",
+      subtitle: "خودرویی که به‌روزرسانی می‌شود",
+      icon: "</>",
+      description:
+        "نرم‌افزار در خودروهای مدرن نقش بسیار مهمی دارد. بسیاری از قابلیت‌های خودرو توسط نرم‌افزار کنترل می‌شوند و برخی سازندگان امکان به‌روزرسانی از راه دور را فراهم کرده‌اند.",
+      details: [
+        "کنترل سیستم‌های خودرو",
+        "مدیریت انرژی",
+        "بهبود عملکرد سیستم‌ها",
+        "به‌روزرسانی نرم‌افزاری از راه دور در برخی مدل‌ها",
+      ],
+    },
+  ],
+  en: [
+    {
+      id: "battery",
+      title: "Battery",
+      subtitle: "The heart of the car's energy",
+      icon: "▣",
+      description:
+        "The battery is one of the most important parts of an electric car. The electrical energy needed by the motor and many of the car's systems is stored in the battery.",
+      details: [
+        "Many modern cars use lithium-ion batteries.",
+        "Battery capacity is usually expressed in kWh.",
+        "The battery management system monitors the condition and temperature of the cells.",
+        "Temperature, charging habits, and usage patterns can affect battery performance.",
+      ],
+    },
+    {
+      id: "motor",
+      title: "Electric motor",
+      subtitle: "Turning energy into motion",
+      icon: "⚡",
+      description:
+        "The electric motor converts the energy stored in the battery into mechanical force. One key characteristic of electric motors is delivering high torque from low speeds.",
+      details: [
+        "Different motor types, such as PMSM and induction motors, are used in electric cars.",
+        "A car can have one or several electric motors.",
+        "Dual motors make it possible to create an all-wheel-drive system.",
+        "Electronic motor control plays an important role in the car's efficiency and performance.",
+      ],
+    },
+    {
+      id: "bms",
+      title: "BMS",
+      subtitle: "Smart battery management",
+      icon: "◉",
+      description:
+        "The Battery Management System (BMS) monitors and manages the battery, helping maintain the performance, safety, and proper condition of the battery cells.",
+      details: [
+        "Monitoring cell voltage",
+        "Controlling battery temperature",
+        "Managing the battery's state of charge",
+        "Helping protect the battery in abnormal conditions",
+      ],
+    },
+    {
+      id: "regen",
+      title: "Regenerative braking",
+      subtitle: "Recovering energy",
+      icon: "↻",
+      description:
+        "In a regenerative braking system, part of the car's kinetic energy can be converted into electrical energy during deceleration and sent back to the battery.",
+      details: [
+        "When slowing down, the motor can act like a generator.",
+        "The recovered energy can return to the battery.",
+        "This system can reduce the need for friction braking.",
+        "The amount of energy recovered depends on driving conditions and the car's design.",
+      ],
+    },
+    {
+      id: "adas",
+      title: "ADAS",
+      subtitle: "Driver assistance systems",
+      icon: "◎",
+      description:
+        "Advanced driver assistance systems are a set of cameras, radars, and software designed to help the driver in various situations.",
+      details: [
+        "Lane departure warning",
+        "Adaptive cruise control",
+        "Automatic emergency braking",
+        "Detection of nearby vehicles and obstacles",
+      ],
+    },
+    {
+      id: "software",
+      title: "Car software",
+      subtitle: "A car that gets updated",
+      icon: "</>",
+      description:
+        "Software plays a very important role in modern cars. Many of a car's features are controlled by software, and some manufacturers offer over-the-air updates.",
+      details: [
+        "Controlling the car's systems",
+        "Energy management",
+        "Improving system performance",
+        "Over-the-air software updates in some models",
+      ],
+    },
+  ],
+};
 
-const architecture = [
-  {
-    number: "01",
-    title: "باتری",
-    text: "انرژی الکتریکی را ذخیره می‌کند.",
+const architecture: Record<
+  Language,
+  { number: string; title: string; text: string }[]
+> = {
+  fa: [
+    { number: "01", title: "باتری", text: "انرژی الکتریکی را ذخیره می‌کند." },
+    {
+      number: "02",
+      title: "اینورتر",
+      text: "توان الکتریکی را برای موتور مدیریت و تبدیل می‌کند.",
+    },
+    {
+      number: "03",
+      title: "موتور",
+      text: "انرژی الکتریکی را به حرکت تبدیل می‌کند.",
+    },
+    {
+      number: "04",
+      title: "چرخ‌ها",
+      text: "نیروی تولیدشده را به حرکت خودرو تبدیل می‌کنند.",
+    },
+  ],
+  en: [
+    { number: "01", title: "Battery", text: "Stores electrical energy." },
+    {
+      number: "02",
+      title: "Inverter",
+      text: "Manages and converts electrical power for the motor.",
+    },
+    {
+      number: "03",
+      title: "Motor",
+      text: "Converts electrical energy into motion.",
+    },
+    {
+      number: "04",
+      title: "Wheels",
+      text: "Turn the generated force into the car's movement.",
+    },
+  ],
+};
+
+const ui = {
+  fa: {
+    introTitle: "تکنولوژی‌های اصلی خودروهای برقی",
+    introText:
+      "خودروهای برقی فقط یک موتور و باتری نیستند. مجموعه‌ای از سیستم‌های الکترونیکی، نرم‌افزاری و مکانیکی در کنار یکدیگر عملکرد خودرو را شکل می‌دهند.",
+    keyTech: "فناوری کلیدی خودروهای برقی",
+    aboutTech: "درباره این فناوری",
+    keyPoints: "نکات مهم",
+    archTitle: "یک خودروی برقی چگونه حرکت می‌کند؟",
+    archText:
+      "به‌صورت ساده، انرژی از باتری دریافت و توسط مجموعه‌ای از سیستم‌های الکتریکی و مکانیکی به حرکت تبدیل می‌شود.",
+    batteryTitle: "چرا باتری این‌قدر مهم است؟",
+    batteryText:
+      "باتری بخش بزرگی از هزینه و وزن یک خودروی برقی را تشکیل می‌دهد و ظرفیت آن مستقیماً روی مقدار انرژی قابل ذخیره تأثیر دارد.",
+    capacityUnit: "واحد ظرفیت",
+    management: "مدیریت",
+    importantNote: "نکته مهم",
+    moreTitle: "ظرفیت بیشتر همیشه به معنی عملکرد بهتر نیست",
+    moreText:
+      "برد خودرو تنها به ظرفیت باتری وابسته نیست. وزن خودرو، آیرودینامیک، بازده موتور، شرایط آب‌وهوا، سرعت رانندگی و سبک رانندگی نیز می‌توانند روی مصرف انرژی تأثیر داشته باشند.",
+    moreConclusion:
+      "بنابراین هنگام بررسی خودروهای برقی، بهتر است مجموعه‌ای از مشخصات فنی را در کنار یکدیگر بررسی کنید.",
+    adasTitle: "فناوری‌هایی که به راننده کمک می‌کنند",
+    adasText:
+      "سیستم‌های کمک‌راننده با استفاده از حسگرها و نرم‌افزارهای مختلف، اطلاعات محیط اطراف خودرو را تحلیل کرده و در برخی شرایط به راننده هشدار یا کمک ارائه می‌کنند.",
+    adasList: [
+      "کروز کنترل تطبیقی",
+      "هشدار خروج از خط",
+      "ترمز اضطراری",
+      "تشخیص نقاط کور",
+      "تشخیص علائم رانندگی",
+      "پارک خودکار",
+    ],
+    adasNote:
+      "سیستم‌های کمک‌راننده جایگزین توجه و کنترل راننده نیستند و قابلیت‌های واقعی آن‌ها به مدل خودرو و تجهیزات نصب‌شده بستگی دارد.",
+    note: "توجه:",
+    disclaimer:
+      "مطالب این صفحه برای نمونه محتوایی و طراحی رابط کاربری تهیه شده‌اند. جزئیات فنی نهایی باید پیش از انتشار با منابع رسمی سازندگان و منابع تخصصی معتبر بررسی شوند.",
   },
-  {
-    number: "02",
-    title: "اینورتر",
-    text: "توان الکتریکی را برای موتور مدیریت و تبدیل می‌کند.",
+  en: {
+    introTitle: "Key technologies in electric cars",
+    introText:
+      "Electric cars are more than just a motor and a battery. A set of electronic, software, and mechanical systems work together to shape the car's performance.",
+    keyTech: "A key electric-car technology",
+    aboutTech: "About this technology",
+    keyPoints: "Key points",
+    archTitle: "How does an electric car move?",
+    archText:
+      "In simple terms, energy is drawn from the battery and turned into motion by a set of electrical and mechanical systems.",
+    batteryTitle: "Why is the battery so important?",
+    batteryText:
+      "The battery makes up a large share of an electric car's cost and weight, and its capacity directly affects how much energy can be stored.",
+    capacityUnit: "Capacity unit",
+    management: "Management",
+    importantNote: "Important note",
+    moreTitle: "More capacity doesn't always mean better performance",
+    moreText:
+      "A car's range doesn't depend on battery capacity alone. Vehicle weight, aerodynamics, motor efficiency, weather conditions, driving speed, and driving style can also affect energy consumption.",
+    moreConclusion:
+      "So when evaluating electric cars, it's best to look at a range of technical specs together.",
+    adasTitle: "Technologies that help the driver",
+    adasText:
+      "Driver assistance systems use various sensors and software to analyze the car's surroundings and, in some situations, warn or assist the driver.",
+    adasList: [
+      "Adaptive cruise control",
+      "Lane departure warning",
+      "Emergency braking",
+      "Blind-spot detection",
+      "Traffic sign recognition",
+      "Automatic parking",
+    ],
+    adasNote:
+      "Driver assistance systems do not replace the driver's attention and control, and their actual capabilities depend on the car model and installed equipment.",
+    note: "Note:",
+    disclaimer:
+      "The content on this page was prepared as a content and UI design sample. The final technical details should be verified against official manufacturer sources and reliable specialist sources before publication.",
   },
-  {
-    number: "03",
-    title: "موتور",
-    text: "انرژی الکتریکی را به حرکت تبدیل می‌کند.",
-  },
-  {
-    number: "04",
-    title: "چرخ‌ها",
-    text: "نیروی تولیدشده را به حرکت خودرو تبدیل می‌کنند.",
-  },
-];
+};
 
 export default function EVTechnology() {
   const [activeTechnology, setActiveTechnology] = useState("battery");
+  const { language } = useLanguage();
+  const isFa = language === "fa";
+
+  const t = ui[language];
+  const techList = technologies[language];
+  const arch = architecture[language];
 
   const active =
-    technologies.find((item) => item.id === activeTechnology) ??
-    technologies[0];
+    techList.find((item) => item.id === activeTechnology) ?? techList[0];
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
@@ -137,32 +331,31 @@ export default function EVTechnology() {
         </p>
 
         <h2 className="text-3xl font-bold sm:text-4xl">
-          تکنولوژی‌های اصلی خودروهای برقی
+          {t.introTitle}
         </h2>
 
         <p className="mt-5 leading-8 text-gray-400">
-          خودروهای برقی فقط یک موتور و باتری نیستند. مجموعه‌ای از
-          سیستم‌های الکترونیکی، نرم‌افزاری و مکانیکی در کنار یکدیگر
-          عملکرد خودرو را شکل می‌دهند.
+          {t.introText}
         </p>
       </div>
 
       {/* Technology selector */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {technologies.map((technology) => {
+        {techList.map((technology) => {
           const isActive = activeTechnology === technology.id;
 
           return (
             <button
               key={technology.id}
               onClick={() => setActiveTechnology(technology.id)}
-              className={`group rounded-3xl border p-6 text-right transition duration-300 ${
+              className={`group rounded-3xl border p-6 text-start transition duration-300 ${
                 isActive
                   ? "border-[#39f77b]/50 bg-[#39f77b]/10 shadow-[0_0_40px_rgba(57,247,123,0.07)]"
                   : "border-white/10 bg-[#0b0f16] hover:border-[#39f77b]/30"
               }`}
             >
               <div
+                dir="ltr"
                 className={`flex h-14 w-14 items-center justify-center rounded-2xl text-xl transition ${
                   isActive
                     ? "bg-[#39f77b] text-black"
@@ -197,7 +390,10 @@ export default function EVTechnology() {
                   Technology
                 </span>
 
-                <div className="mt-12 flex h-24 w-24 items-center justify-center rounded-[2rem] border border-[#39f77b]/20 bg-[#39f77b]/10 text-5xl text-[#39f77b]">
+                <div
+                  dir="ltr"
+                  className="mt-12 flex h-24 w-24 items-center justify-center rounded-[2rem] border border-[#39f77b]/20 bg-[#39f77b]/10 text-5xl text-[#39f77b]"
+                >
                   {active.icon}
                 </div>
 
@@ -214,7 +410,7 @@ export default function EVTechnology() {
                 <span className="h-2 w-2 rounded-full bg-[#39f77b]" />
 
                 <span className="text-sm text-gray-500">
-                  فناوری کلیدی خودروهای برقی
+                  {t.keyTech}
                 </span>
               </div>
             </div>
@@ -223,7 +419,7 @@ export default function EVTechnology() {
           {/* Content */}
           <div className="p-8 lg:p-10">
             <p className="text-sm font-semibold text-[#39f77b]">
-              درباره این فناوری
+              {t.aboutTech}
             </p>
 
             <h3 className="mt-3 text-2xl font-bold">
@@ -235,7 +431,7 @@ export default function EVTechnology() {
             </p>
 
             <div className="mt-8">
-              <h4 className="mb-4 font-bold">نکات مهم</h4>
+              <h4 className="mb-4 font-bold">{t.keyPoints}</h4>
 
               <div className="space-y-3">
                 {active.details.map((detail) => (
@@ -264,21 +460,24 @@ export default function EVTechnology() {
           </p>
 
           <h2 className="text-3xl font-bold sm:text-4xl">
-            یک خودروی برقی چگونه حرکت می‌کند؟
+            {t.archTitle}
           </h2>
 
           <p className="mx-auto mt-4 max-w-2xl leading-7 text-gray-500">
-            به‌صورت ساده، انرژی از باتری دریافت و توسط مجموعه‌ای از
-            سیستم‌های الکتریکی و مکانیکی به حرکت تبدیل می‌شود.
+            {t.archText}
           </p>
         </div>
 
         <div className="relative">
-          {/* Connecting line */}
-          <div className="absolute right-8 top-8 hidden h-px w-[calc(100%-4rem)] bg-gradient-to-l from-[#39f77b]/40 via-[#39f77b]/10 to-transparent lg:block" />
+          {/* Connecting line (starts at the reading-start side) */}
+          <div
+            className={`absolute start-8 top-8 hidden h-px w-[calc(100%-4rem)] from-[#39f77b]/40 via-[#39f77b]/10 to-transparent lg:block ${
+              isFa ? "bg-gradient-to-l" : "bg-gradient-to-r"
+            }`}
+          />
 
           <div className="grid gap-5 lg:grid-cols-4">
-            {architecture.map((item) => (
+            {arch.map((item) => (
               <div
                 key={item.number}
                 className="relative rounded-3xl border border-white/10 bg-[#0b0f16] p-6"
@@ -313,19 +512,17 @@ export default function EVTechnology() {
             </p>
 
             <h2 className="mt-3 text-3xl font-bold">
-              چرا باتری این‌قدر مهم است؟
+              {t.batteryTitle}
             </h2>
 
             <p className="mt-5 leading-8 text-gray-400">
-              باتری بخش بزرگی از هزینه و وزن یک خودروی برقی را تشکیل
-              می‌دهد و ظرفیت آن مستقیماً روی مقدار انرژی قابل ذخیره
-              تأثیر دارد.
+              {t.batteryText}
             </p>
 
             <div className="mt-8 grid grid-cols-2 gap-4">
               <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
                 <span className="text-xs text-gray-500">
-                  واحد ظرفیت
+                  {t.capacityUnit}
                 </span>
 
                 <p className="mt-2 text-xl font-bold text-[#39f77b]">
@@ -335,7 +532,7 @@ export default function EVTechnology() {
 
               <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
                 <span className="text-xs text-gray-500">
-                  مدیریت
+                  {t.management}
                 </span>
 
                 <p className="mt-2 text-xl font-bold text-[#39f77b]">
@@ -347,23 +544,20 @@ export default function EVTechnology() {
 
           <div className="rounded-3xl border border-[#39f77b]/20 bg-[#39f77b]/5 p-8">
             <p className="text-sm font-semibold text-[#39f77b]">
-              نکته مهم
+              {t.importantNote}
             </p>
 
             <h2 className="mt-3 text-2xl font-bold">
-              ظرفیت بیشتر همیشه به معنی عملکرد بهتر نیست
+              {t.moreTitle}
             </h2>
 
             <p className="mt-5 leading-8 text-gray-400">
-              برد خودرو تنها به ظرفیت باتری وابسته نیست. وزن خودرو،
-              آیرودینامیک، بازده موتور، شرایط آب‌وهوا، سرعت رانندگی و
-              سبک رانندگی نیز می‌توانند روی مصرف انرژی تأثیر داشته باشند.
+              {t.moreText}
             </p>
 
             <div className="mt-7 rounded-2xl border border-[#39f77b]/10 bg-black/20 p-5">
               <p className="text-sm leading-7 text-gray-400">
-                بنابراین هنگام بررسی خودروهای برقی، بهتر است مجموعه‌ای
-                از مشخصات فنی را در کنار یکدیگر بررسی کنید.
+                {t.moreConclusion}
               </p>
             </div>
           </div>
@@ -403,29 +597,20 @@ export default function EVTechnology() {
             </p>
 
             <h2 className="mt-3 text-3xl font-bold">
-              فناوری‌هایی که به راننده کمک می‌کنند
+              {t.adasTitle}
             </h2>
 
             <p className="mt-5 leading-8 text-gray-400">
-              سیستم‌های کمک‌راننده با استفاده از حسگرها و نرم‌افزارهای
-              مختلف، اطلاعات محیط اطراف خودرو را تحلیل کرده و در برخی
-              شرایط به راننده هشدار یا کمک ارائه می‌کنند.
+              {t.adasText}
             </p>
 
             <div className="mt-7 grid gap-3 sm:grid-cols-2">
-              {[
-                "کروز کنترل تطبیقی",
-                "هشدار خروج از خط",
-                "ترمز اضطراری",
-                "تشخیص نقاط کور",
-                "تشخیص علائم رانندگی",
-                "پارک خودکار",
-              ].map((item) => (
+              {t.adasList.map((item) => (
                 <div
                   key={item}
                   className="rounded-xl border border-white/10 bg-white/[0.02] p-4 text-sm text-gray-400"
                 >
-                  <span className="ml-2 text-[#39f77b]">✓</span>
+                  <span className="me-2 text-[#39f77b]">✓</span>
                   {item}
                 </div>
               ))}
@@ -433,52 +618,19 @@ export default function EVTechnology() {
 
             <div className="mt-7 rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-4">
               <p className="text-xs leading-6 text-gray-500">
-                سیستم‌های کمک‌راننده جایگزین توجه و کنترل راننده نیستند
-                و قابلیت‌های واقعی آن‌ها به مدل خودرو و تجهیزات نصب‌شده
-                بستگی دارد.
+                {t.adasNote}
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* CTA */}
-      <div className="relative mt-20 overflow-hidden rounded-3xl border border-[#39f77b]/20 bg-[#0b0f16] p-8 sm:p-10">
-        <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-[#39f77b]/10 blur-3xl" />
-
-        <div className="relative flex flex-col items-center justify-between gap-7 text-center md:flex-row md:text-right">
-          <div>
-            <p className="text-sm font-semibold text-[#39f77b]">
-              ElectroCar
-            </p>
-
-            <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
-              حالا خودروهای برقی را با هم مقایسه کنید
-            </h2>
-
-            <p className="mt-3 max-w-2xl leading-7 text-gray-500">
-              مشخصات فنی خودروهای مختلف را ببینید و آن‌ها را کنار یکدیگر
-              بررسی کنید.
-            </p>
-          </div>
-
-          <a
-            href="/compare"
-            className="shrink-0 rounded-xl bg-[#39f77b] px-6 py-3 font-bold text-black transition hover:bg-[#69ff9a]"
-          >
-            مقایسه خودروها
-          </a>
-        </div>
-      </div>
-
       {/* Disclaimer */}
       <div className="mt-10 rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-5 text-sm leading-7 text-gray-400">
         <span className="font-semibold text-yellow-400">
-          توجه:
+          {t.note}
         </span>{" "}
-        مطالب این صفحه برای نمونه محتوایی و طراحی رابط کاربری تهیه
-        شده‌اند. جزئیات فنی نهایی باید پیش از انتشار با منابع رسمی
-        سازندگان و منابع تخصصی معتبر بررسی شوند.
+        {t.disclaimer}
       </div>
     </section>
   );

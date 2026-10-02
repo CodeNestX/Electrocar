@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { Vazirmatn } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const vazirmatn = Vazirmatn({
-  subsets: ["arabic"],
+  // "latin" is needed so English text uses the same font as Persian text
+  subsets: ["arabic", "latin"],
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-vazirmatn",
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: {
     default: "ElectroCar | دنیای خودروهای برقی",
     template: "%s | ElectroCar",
@@ -41,14 +43,33 @@ export const metadata = {
   },
 };
 
+// Runs before the first paint so the page direction (rtl/ltr) is already
+// correct for returning visitors and the layout doesn't jump.
+const setDirectionScript = `
+try {
+  var l = localStorage.getItem("app_lang");
+  if (l === "fa" || l === "en") {
+    document.documentElement.lang = l;
+    document.documentElement.dir = l === "fa" ? "rtl" : "ltr";
+  }
+} catch (e) {}
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl">
-      <body className={vazirmatn.variable}>{children}</body>
+    <html lang="fa" dir="rtl" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: setDirectionScript }} />
+      </head>
+      <body className={vazirmatn.variable}>
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
+      </body>
     </html>
   );
 }

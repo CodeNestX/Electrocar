@@ -1,7 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
-import SectionTitle from "@/components/SectionTitle";
 import { articles } from "@/data/articles";
 
 const categories = [
@@ -16,93 +18,84 @@ const categories = [
 ];
 
 export default function ArticlesPage() {
-  return (
-    <div className="min-h-screen bg-[#050b11]">
+  const [activeCategory, setActiveCategory] = useState("همه");
 
+  const filteredArticles =
+    activeCategory === "همه"
+      ? articles
+      : articles.filter((article) => article.category === activeCategory);
+
+  return (
+    <div className="min-h-screen bg-[#050b11] text-white">
       <Header />
 
-      <main>
+      <main dir="rtl" className="mx-auto min-h-[70vh] max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mb-10 text-center">
+          <span className="mb-3 inline-block text-sm font-semibold text-green-400">
+            دانشنامه ElectroCar
+          </span>
+          <h1 className="text-3xl font-extrabold sm:text-4xl">
+            مقالات خودروهای برقی
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-8 text-gray-400 sm:text-base">
+            راهنماها، آموزش‌ها و مطالب تخصصی درباره فناوری خودروهای الکتریکی
+          </p>
+        </div>
 
-        {/* Page Hero */}
-        <section className="relative overflow-hidden border-b border-white/5 bg-gradient-to-b from-[#08151f] to-[#050b11] py-20">
+        {/* فیلتر دسته‌بندی‌ها */}
+        <div className="mb-8 flex flex-wrap justify-center gap-3">
+          {categories.map((category) => {
+            const isActive = activeCategory === category;
 
-          <div className="absolute right-0 top-0 h-72 w-72 rounded-full bg-[#39f77b]/5 blur-[100px]" />
+            return (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setActiveCategory(category)}
+                className={`rounded-full border px-5 py-2.5 text-sm transition-all duration-200 ${
+                  isActive
+                    ? "border-green-400 bg-green-400 text-[#050b11] font-bold shadow-lg shadow-cyan-400/20"
+                    : "border-white/10 bg-white/[0.03] text-gray-300 hover:border-green-400/60 hover:text-green-300"
+                }`}
+              >
+                {category}
+              </button>
+            );
+          })}
+        </div>
 
-          <div className="site-container relative">
+        <div className="mb-6 flex items-center justify-between border-b border-white/10 pb-4">
+          <h2 className="text-lg font-bold">
+            {activeCategory === "همه" ? "همه مقالات" : activeCategory}
+          </h2>
+          <span className="text-sm text-gray-400">
+            {filteredArticles.length} مقاله
+          </span>
+        </div>
 
-            <div className="max-w-3xl">
-
-              <div className="mb-5 flex items-center gap-3 text-sm text-[#39f77b]">
-                <span className="h-2 w-2 rounded-full bg-[#39f77b]" />
-                ElectroCar Magazine
-              </div>
-
-              <h1 className="text-4xl font-extrabold leading-[1.5] text-white md:text-5xl">
-                مقالات و آموزش
-                <span className="text-[#39f77b]">
-                  {" "}خودروهای برقی
-                </span>
-              </h1>
-
-              <p className="mt-6 max-w-2xl text-sm leading-8 text-gray-500 md:text-base">
-                راهنماهای آموزشی، بررسی فناوری‌ها و مطالب تخصصی برای
-                شناخت بهتر دنیای خودروهای الکتریکی.
-              </p>
-
-            </div>
-
+        {filteredArticles.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredArticles.map((article) => (
+              <ArticleCard key={article.id} article={article} />
+            ))}
           </div>
-
-        </section>
-
-        {/* Articles */}
-        <section className="section-space">
-
-          <div className="site-container">
-
-            <SectionTitle
-              title="مقالات ElectroCar"
-              description="مطالب آموزشی و تخصصی درباره خودروهای الکتریکی"
-            />
-
-            {/* Categories */}
-            <div className="mb-10 flex gap-2 overflow-x-auto pb-2">
-
-              {categories.map((category, index) => (
-                <button
-                  key={category}
-                  className={`shrink-0 rounded-full border px-5 py-2.5 text-xs font-semibold transition ${
-                    index === 0
-                      ? "border-[#39f77b] bg-[#39f77b] text-[#06100a]"
-                      : "border-white/10 bg-white/[0.02] text-gray-400 hover:border-[#39f77b]/40 hover:text-[#39f77b]"
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-
-            </div>
-
-            {/* Articles grid */}
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-
-              {articles.map((article) => (
-                <ArticleCard
-                  key={article.id}
-                  article={article}
-                />
-              ))}
-
-            </div>
-
+        ) : (
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] py-16 text-center">
+            <p className="text-gray-300">
+              مقاله‌ای در این دسته‌بندی وجود ندارد.
+            </p>
+            <button
+              type="button"
+              onClick={() => setActiveCategory("همه")}
+              className="mt-5 rounded-full bg-cyan-400 px-5 py-2 text-sm font-bold text-[#050b11] transition hover:bg-cyan-300"
+            >
+              نمایش همه مقالات
+            </button>
           </div>
-
-        </section>
-
+        )}
       </main>
 
       <Footer />
-
     </div>
   );
 }

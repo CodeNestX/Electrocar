@@ -28,7 +28,7 @@ export default async function NewsDetailPage({
 
       <Header />
 
-      <main>
+      <main dir="rtl">
 
         {/* Header */}
         <section className="pt-14 md:pt-20">

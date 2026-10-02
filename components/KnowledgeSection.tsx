@@ -1,7 +1,18 @@
+"use client";
+
+import { useLanguage } from "@/context/LanguageContext";
+
 const items = [
   {
-    title: "باتری",
-    text: "از ظرفیت باتری و طول عمر آن تا فناوری‌های جدید ذخیره انرژی را بهتر بشناسید.",
+    id: "battery",
+    fa: {
+      title: "باتری",
+      text: "از ظرفیت باتری و طول عمر آن تا فناوری‌های جدید ذخیره انرژی را بهتر بشناسید.",
+    },
+    en: {
+      title: "Battery",
+      text: "From battery capacity and lifespan to new energy-storage technologies, get to know it better.",
+    },
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -17,8 +28,15 @@ const items = [
     ),
   },
   {
-    title: "شارژ",
-    text: "AC یا DC؟ شارژ سریع چیست و برای شارژ خودروهای برقی چه روش‌هایی وجود دارد؟",
+    id: "charging",
+    fa: {
+      title: "شارژ",
+      text: "AC یا DC؟ شارژ سریع چیست و برای شارژ خودروهای برقی چه روش‌هایی وجود دارد؟",
+    },
+    en: {
+      title: "Charging",
+      text: "AC or DC? What is fast charging, and what methods are there for charging electric cars?",
+    },
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -32,8 +50,15 @@ const items = [
     ),
   },
   {
-    title: "فناوری",
-    text: "از سیستم مدیریت باتری تا رانندگی هوشمند و امکانات نرم‌افزاری خودرو.",
+    id: "technology",
+    fa: {
+      title: "فناوری",
+      text: "از سیستم مدیریت باتری تا رانندگی هوشمند و امکانات نرم‌افزاری خودرو.",
+    },
+    en: {
+      title: "Technology",
+      text: "From the battery management system to smart driving and the car's software features.",
+    },
     icon: (
       <svg
         viewBox="0 0 24 24"
@@ -51,52 +76,51 @@ const items = [
 ];
 
 export default function KnowledgeSection() {
+  const { language } = useLanguage();
+  const isFa = language === "fa";
+
   return (
-    <section className="pb-24">
+    <section id="technology" className="scroll-mt-24 pb-24">
       <div className="site-container">
-
-        <div className="overflow-hidden rounded-3xl border border-[#39f77b]/10 bg-gradient-to-l from-[#0b1c27] to-[#08121b]">
-
+        <div
+          className={`overflow-hidden rounded-3xl border border-[#39f77b]/10 from-[#0b1c27] to-[#08121b] ${
+            isFa ? "bg-gradient-to-l" : "bg-gradient-to-r"
+          }`}
+        >
           <div className="grid md:grid-cols-3">
-
             {items.map((item, index) => (
               <div
-                key={item.title}
+                key={item.id}
                 className={`relative p-7 ${
                   index !== items.length - 1
-                    ? "border-b border-white/5 md:border-b-0 md:border-l"
+                    ? "border-b border-white/5 md:border-b-0 md:border-e"
                     : ""
                 }`}
               >
                 <div className="mb-5 flex items-center gap-4">
-
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#39f77b]/10 text-[#39f77b]">
                     {item.icon}
                   </div>
 
                   <h3 className="text-lg font-extrabold">
-                    {item.title}
+                    {item[language].title}
                   </h3>
-
                 </div>
 
                 <p className="text-sm leading-7 text-gray-500">
-                  {item.text}
+                  {item[language].text}
                 </p>
 
                 <a
                   href="/articles"
                   className="mt-5 inline-block text-xs font-bold text-[#39f77b]"
                 >
-                  بیشتر بدانید ←
+                  {isFa ? "بیشتر بدانید ←" : "Learn more →"}
                 </a>
               </div>
             ))}
-
           </div>
-
         </div>
-
       </div>
     </section>
   );

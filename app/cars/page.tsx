@@ -1,25 +1,46 @@
+"use client";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CarCard from "@/components/CarCard";
 import SectionTitle from "@/components/SectionTitle";
 import { cars } from "@/data/cars";
+import { useLanguage } from "@/context/LanguageContext";
 
-const brands = [
-  "همه برندها",
-  "Tesla",
-  "BYD",
-  "Hyundai",
-  "Kia",
-  "XPeng",
-];
-
-const types = [
-  "همه",
-  "سدان",
-  "کراس‌اوور",
-];
+const ui = {
+  fa: {
+    heroTitleA: "دنیای",
+    heroHighlight: "خودروهای برقی",
+    heroDesc:
+      "مشخصات، فناوری‌ها و اطلاعات خودروهای الکتریکی محبوب را در ElectroCar بررسی کنید.",
+    sectionTitle: "خودروهای برقی",
+    sectionDesc: "مدل‌های منتخب خودروهای الکتریکی",
+    brand: "برند",
+    carType: "نوع خودرو",
+    brands: ["همه برندها", "Tesla", "BYD", "Hyundai", "Kia", "XPeng"],
+    types: ["همه", "سدان", "کراس‌اوور"],
+    sort: "مرتب‌سازی",
+  },
+  en: {
+    heroTitleA: "The world of",
+    heroHighlight: "electric cars",
+    heroDesc:
+      "Explore the specs, technologies, and details of popular electric cars on ElectroCar.",
+    sectionTitle: "Electric Cars",
+    sectionDesc: "Selected electric car models",
+    brand: "Brand",
+    carType: "Car type",
+    brands: ["All brands", "Tesla", "BYD", "Hyundai", "Kia", "XPeng"],
+    types: ["All", "Sedan", "Crossover"],
+    sort: "Sort",
+  },
+};
 
 export default function CarsPage() {
+  const { language } = useLanguage();
+  const isFa = language === "fa";
+  const t = ui[language];
+
   return (
     <div className="min-h-screen bg-[#050b11]">
 
@@ -42,15 +63,14 @@ export default function CarsPage() {
               </div>
 
               <h1 className="text-4xl font-extrabold leading-[1.5] text-white md:text-5xl">
-                دنیای
+                {t.heroTitleA}
                 <span className="text-[#39f77b]">
-                  {" "}خودروهای برقی
+                  {" "}{t.heroHighlight}
                 </span>
               </h1>
 
               <p className="mt-6 max-w-2xl text-sm leading-8 text-gray-500 md:text-base">
-                مشخصات، فناوری‌ها و اطلاعات خودروهای الکتریکی
-                محبوب را در ElectroCar بررسی کنید.
+                {t.heroDesc}
               </p>
 
             </div>
@@ -65,8 +85,8 @@ export default function CarsPage() {
           <div className="site-container">
 
             <SectionTitle
-              title="خودروهای برقی"
-              description="مدل‌های منتخب خودروهای الکتریکی"
+              title={t.sectionTitle}
+              description={t.sectionDesc}
             />
 
             {/* Filters */}
@@ -76,12 +96,12 @@ export default function CarsPage() {
               <div className="ev-card rounded-2xl p-5">
 
                 <span className="mb-4 block text-xs font-bold text-gray-500">
-                  برند
+                  {t.brand}
                 </span>
 
                 <div className="flex gap-2 overflow-x-auto pb-1">
 
-                  {brands.map((brand, index) => (
+                  {t.brands.map((brand, index) => (
                     <button
                       key={brand}
                       className={`shrink-0 rounded-xl border px-4 py-2.5 text-xs font-semibold transition ${
@@ -102,12 +122,12 @@ export default function CarsPage() {
               <div className="ev-card rounded-2xl p-5">
 
                 <span className="mb-4 block text-xs font-bold text-gray-500">
-                  نوع خودرو
+                  {t.carType}
                 </span>
 
                 <div className="flex gap-2">
 
-                  {types.map((type, index) => (
+                  {t.types.map((type, index) => (
                     <button
                       key={type}
                       className={`rounded-xl border px-5 py-2.5 text-xs font-semibold transition ${
@@ -130,15 +150,15 @@ export default function CarsPage() {
             <div className="mb-6 flex items-center justify-between">
 
               <p className="text-xs text-gray-600">
-                نمایش{" "}
+                {isFa ? "نمایش" : "Showing"}{" "}
                 <span className="text-gray-300">
                   {cars.length}
                 </span>{" "}
-                خودرو
+                {isFa ? "خودرو" : cars.length === 1 ? "car" : "cars"}
               </p>
 
               <button className="text-xs text-gray-500 transition hover:text-[#39f77b]">
-                مرتب‌سازی
+                {t.sort}
               </button>
 
             </div>

@@ -1,3 +1,7 @@
+"use client";
+
+import { useLanguage } from "@/context/LanguageContext";
+
 interface SectionTitleProps {
   title: string;
   description?: string;
@@ -8,9 +12,14 @@ interface SectionTitleProps {
 export default function SectionTitle({
   title,
   description,
-  linkText = "مشاهده همه",
+  linkText,
   linkHref = "#",
 }: SectionTitleProps) {
+  const { language } = useLanguage();
+  const isFa = language === "fa";
+
+  const finalLinkText = linkText ?? (isFa ? "مشاهده همه" : "View all");
+
   return (
     <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
@@ -33,7 +42,7 @@ export default function SectionTitle({
         href={linkHref}
         className="w-fit text-sm font-semibold text-[#39f77b] transition hover:text-white"
       >
-        {linkText} ←
+        {finalLinkText} {isFa ? "←" : "→"}
       </a>
     </div>
   );

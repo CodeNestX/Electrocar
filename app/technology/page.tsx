@@ -1,8 +1,31 @@
+"use client";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import EVTechnology from "@/components/EVTechnology";
+import { useLanguage } from "@/context/LanguageContext";
+
+const ui = {
+  fa: {
+    badge: "فناوری خودروهای برقی",
+    titleA: "پشت پرده",
+    highlight: "خودروهای آینده",
+    titleB: "چیست؟",
+    desc: "از باتری و موتور الکتریکی گرفته تا سیستم ترمز احیاکننده، مدیریت باتری و فناوری‌های کمک‌راننده؛ تکنولوژی‌های اصلی خودروهای برقی را بشناسید.",
+  },
+  en: {
+    badge: "Electric car technology",
+    titleA: "What's behind",
+    highlight: "the cars of the future?",
+    titleB: "",
+    desc: "From the battery and electric motor to regenerative braking, battery management, and driver-assistance technologies, get to know the key technologies of electric cars.",
+  },
+};
 
 export default function TechnologyPage() {
+  const { language } = useLanguage();
+  const t = ui[language];
+
   return (
     <>
       <Header />
@@ -14,19 +37,17 @@ export default function TechnologyPage() {
           <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-3xl text-center">
               <span className="mb-5 inline-flex rounded-full border border-[#39f77b]/20 bg-[#39f77b]/10 px-4 py-2 text-sm font-medium text-[#39f77b]">
-                فناوری خودروهای برقی
+                {t.badge}
               </span>
 
               <h1 className="text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
-                پشت پرده
-                <span className="text-[#39f77b]"> خودروهای آینده </span>
-                چیست؟
+                {t.titleA}{" "}
+                <span className="text-[#39f77b]">{t.highlight}</span>{" "}
+                {t.titleB}
               </h1>
 
               <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-gray-400 sm:text-lg">
-                از باتری و موتور الکتریکی گرفته تا سیستم ترمز احیاکننده،
-                مدیریت باتری و فناوری‌های کمک‌راننده؛ تکنولوژی‌های اصلی
-                خودروهای برقی را بشناسید.
+                {t.desc}
               </p>
             </div>
           </div>
