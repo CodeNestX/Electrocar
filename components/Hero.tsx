@@ -92,13 +92,9 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative overflow-hidden">
-      <div
-        className="hero-image relative min-h-[620px]"
-        style={{
-          backgroundImage: `url("${slide.image}")`,
-        }}
-      >
+    <section className="relative min-h-[100svh] overflow-hidden"> 
+     <div className="hero-image relative min-h-[100svh]" 
+     style={{ backgroundImage: `url("${slide.image}")`, }} >
         {/* Overlay (mirrored with the reading direction) */}
         <div
           className={`absolute inset-0 from-[#050b11]/30 via-[#050b11]/60 to-[#050b11] ${
@@ -106,7 +102,7 @@ export default function Hero() {
           }`}
         />
 
-        <div className="site-container relative z-10 flex min-h-[620px] items-center">
+        <div className="site-container relative z-10 flex min-h-[100svh] items-center">
           <div className="max-w-2xl">
 
             <div className="mb-5 flex items-center gap-2 text-sm text-gray-300">

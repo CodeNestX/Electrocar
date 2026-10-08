@@ -30,7 +30,7 @@ export default function TechnologyPage() {
     <>
       <Header />
 
-      <main className="min-h-screen bg-[#05070b] text-white">
+      <main className="min-h-screen bg-[#05070b] pt-[40px] text-white sm:pt-[60px]">
         <section className="relative overflow-hidden border-b border-white/10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(57,247,123,0.14),transparent_45%)]" />
 
@@ -60,3 +60,4 @@ export default function TechnologyPage() {
     </>
   );
 }
+
