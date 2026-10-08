@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 // نسخه فارسی صفحه تک‌مقاله.
 // نسخه انگلیسی: ArticleDetailEn.tsx (کاملاً جدا)
-export default function ArticleDetailFa({ slug }: { slug: string }) {
+export default function ArticleDetailFa({ slug ,id }: { slug: string , id:number }) {
   // پیدا کردن مقاله بر اساس slug
   const article = articles.find((item: any) => item.slug === slug);
 
@@ -19,7 +19,7 @@ export default function ArticleDetailFa({ slug }: { slug: string }) {
     .slice(0, 2);
 
   return (
-    <main dir="rtl" className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8 dir-rtl text-right">
+    <main dir="rtl" className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8 dir-rtl text-right pt-[90px] sm:pt-[100px]">
       <div className="max-w-4xl mx-auto space-y-8">
       
         {/* هدر و عنوان مقاله */}
@@ -35,9 +35,10 @@ export default function ArticleDetailFa({ slug }: { slug: string }) {
                 📅 {articleData.date}
               </span>
             )}
-            {articleData.readTime && (
+            {/* اصلاح نام فیلد برای پشتیبانی از readingTime و readTime */}
+            {(articleData.readingTime || articleData.readTime) && (
               <span className="text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1 rounded-full">
-                ⏱️ زمان مطالعه: {articleData.readTime}
+                ⏱️ زمان مطالعه: {articleData.readingTime || articleData.readTime}
               </span>
             )}
           </div>

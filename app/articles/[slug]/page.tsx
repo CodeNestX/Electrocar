@@ -13,10 +13,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   // The slug is the same in Persian and English, so one check covers both.
   const exists = articles.some((item) => item.slug === slug);
-
+  const myArticle = articles.filter((item)=> item.slug === slug)
   if (!exists) {
     notFound();
   }
 
-  return <ArticleView slug={slug} />;
+  return <ArticleView id={myArticle[0].id}  slug={slug} />;
 }

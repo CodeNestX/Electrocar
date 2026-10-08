@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 // English version of the single-article page content.
 // Persian version: ArticleDetailFa.tsx (completely separate).
-export default function ArticleDetailEn({ slug }: { slug: string }) {
+export default function ArticleDetailEn({ slug ,id }: { slug: string , id:number }) {
   const article = articlesEn.find((item) => item.slug === slug);
 
   if (!article) return null;
@@ -16,7 +16,7 @@ export default function ArticleDetailEn({ slug }: { slug: string }) {
     .slice(0, 2);
 
   return (
-    <main dir="ltr" className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8 text-left">
+    <main dir="ltr" className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8 text-left pt-[90px] sm:pt-[100px]">
       <div className="max-w-4xl mx-auto space-y-8">
 
         {/* Article header */}

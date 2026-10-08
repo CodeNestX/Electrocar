@@ -17,7 +17,8 @@ const categories = [
 
 // نسخه فارسی لیست مقالات.
 // نسخه انگلیسی: ArticlesPageEn.tsx (کاملاً جدا)
-export default function ArticlesPageFa() {
+export default function 
+ArticlesPageFa() {
   const [activeCategory, setActiveCategory] = useState("همه");
 
   const filteredArticles =
