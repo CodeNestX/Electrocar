@@ -53,16 +53,14 @@ const values = {
 
 const stats = {
   fa: [
-    { value: "01", title: "اخبار", text: "تحولات دنیای خودروهای برقی" },
-    { value: "02", title: "مقالات", text: "مطالب آموزشی و تخصصی" },
-    { value: "03", title: "خودروها", text: "معرفی مدل‌های مختلف" },
-    { value: "04", title: "فناوری", text: "بررسی تکنولوژی‌های EV" },
+    { value: "01", title: "مقالات", text: "مطالب آموزشی و تخصصی" },
+    { value: "02", title: "فناوری", text: "بررسی تکنولوژی‌های EV" },
+    { value: "03", title: "اطلاعات روز", text: "تازه‌ترین اطلاعات دنیای خودروهای برقی" },
   ],
   en: [
-    { value: "01", title: "News", text: "Developments in the world of electric cars" },
-    { value: "02", title: "Articles", text: "Educational and specialist content" },
-    { value: "03", title: "Cars", text: "Introducing different models" },
-    { value: "04", title: "Technology", text: "Exploring EV technologies" },
+    { value: "01", title: "Articles", text: "Educational and specialist content" },
+    { value: "02", title: "Technology", text: "Exploring EV technologies" },
+    { value: "03", title: "Up-to-date Information", text: "The latest in the world of electric cars" },
   ],
 };
 
@@ -230,7 +228,7 @@ export default function AboutContent() {
             </h2>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 md:grid-cols-3">
             {stats[language].map((item) => (
               <div
                 key={item.value}

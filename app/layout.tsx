@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Vazirmatn } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 
@@ -44,18 +43,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Runs before the first paint so the page direction (rtl/ltr) is already
-// correct for returning visitors and the layout doesn't jump.
-const setDirectionScript = `
-try {
-  var l = localStorage.getItem("app_lang");
-  if (l === "fa" || l === "en") {
-    document.documentElement.lang = l;
-    document.documentElement.dir = l === "fa" ? "rtl" : "ltr";
-  }
-} catch (e) {}
-`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -64,12 +51,6 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl" suppressHydrationWarning>
       <body className={vazirmatn.variable}>
-        {/* next/script (not a raw <script>) so React 19 doesn't warn */}
-        <Script
-          id="set-direction"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{ __html: setDirectionScript }}
-        />
         <LanguageProvider>
           {children}
         </LanguageProvider>

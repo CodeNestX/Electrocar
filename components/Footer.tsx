@@ -3,6 +3,52 @@
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
+// TODO: put your real account links here
+const socialLinks = [
+  { key: "instagram", href: "https://instagram.com/", label: "Instagram" },
+  { key: "telegram", href: "https://t.me/", label: "Telegram" },
+  { key: "bale", href: "https://ble.ir/", label: "Bale" },
+] as const;
+
+function SocialIcon({ name }: { name: (typeof socialLinks)[number]["key"] }) {
+  const common = {
+    className: "h-5 w-5",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.7,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true,
+  };
+
+  if (name === "instagram") {
+    return (
+      <svg {...common}>
+        <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  if (name === "telegram") {
+    return (
+      <svg {...common}>
+        <path d="M21 4 3 11l5.5 2L19 6.5 10 14.5V19l3-3.2 4.5 3.2L21 4Z" />
+      </svg>
+    );
+  }
+
+  // Bale: chat bubble
+  return (
+    <svg {...common}>
+      <path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" />
+      <path d="M8.5 11h7" />
+    </svg>
+  );
+}
+
 export default function Footer() {
   const { language } = useLanguage();
 
@@ -99,53 +145,44 @@ export default function Footer() {
                 {isFa ? "صفحه اصلی" : "Home"}
               </Link>
 
-              <Link
-                href="/news"
-                className="transition hover:text-[#39f77b]"
-              >
-                {isFa ? "آخرین اخبار" : "Latest News"}
+              <Link href="/articles" className="transition hover:text-[#39f77b]">
+                {isFa ? "مقالات" : "Articles"}
               </Link>
 
-              <Link
-                href="/articles"
-                className="transition hover:text-[#39f77b]"
-              >
-                {isFa ? "مقالات" : "Articles"}
+              <Link href="/technology" className="transition hover:text-[#39f77b]">
+                {isFa ? "تکنولوژی" : "Technology"}
+              </Link>
+
+              <Link href="/about" className="transition hover:text-[#39f77b]">
+                {isFa ? "درباره ما" : "About Us"}
+              </Link>
+
+              <Link href="/contact" className="transition hover:text-[#39f77b]">
+                {isFa ? "تماس با ما" : "Contact Us"}
               </Link>
             </div>
           </div>
 
-          {/* Categories */}
+          {/* Contact methods */}
           <div>
             <h3 className="mb-5 font-bold text-white">
-              {isFa ? "دسته‌بندی‌ها" : "Categories"}
+              {isFa ? "راه‌های ارتباطی" : "Contact Methods"}
             </h3>
 
-            <div
-              className={`flex flex-col gap-3 text-sm text-gray-500 ${
-                isFa ? "items-center lg:items-start" : "items-center lg:items-start"
-              }`}
-            >
-              <Link
-                href="/news"
-                className="transition hover:text-[#39f77b]"
-              >
-                {isFa ? "اخبار جهان" : "World News"}
-              </Link>
-
-              <Link
-                href="/charging"
-                className="transition hover:text-[#39f77b]"
-              >
-                {isFa ? "باتری و شارژ" : "Battery & Charging"}
-              </Link>
-
-              <Link
-                href="/technology"
-                className="transition hover:text-[#39f77b]"
-              >
-                {isFa ? "فناوری" : "Technology"}
-              </Link>
+            <div className="flex items-center justify-center gap-3 lg:justify-start">
+              {socialLinks.map((item) => (
+                <a
+                  key={item.key}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={item.label}
+                  title={item.label}
+                  className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-gray-400 transition duration-200 hover:-translate-y-0.5 hover:border-[#39f77b]/50 hover:bg-[#39f77b]/10 hover:text-[#39f77b] hover:shadow-[0_8px_24px_-8px_rgba(57,247,123,0.5)]"
+                >
+                  <SocialIcon name={item.key} />
+                </a>
+              ))}
             </div>
           </div>
 

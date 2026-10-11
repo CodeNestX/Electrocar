@@ -4,6 +4,72 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/context/LanguageContext";
 
+// TODO: put your real account links here
+const socialLinks = [
+  { key: "instagram", href: "https://instagram.com/", label: "Instagram" },
+  { key: "telegram", href: "https://t.me/", label: "Telegram" },
+  { key: "bale", href: "https://ble.ir/", label: "Bale" },
+] as const;
+
+function SocialIcon({ name }: { name: (typeof socialLinks)[number]["key"] }) {
+  const common = {
+    className: "h-5 w-5",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.7,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true,
+  };
+
+  if (name === "instagram") {
+    return (
+      <svg {...common}>
+        <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  if (name === "telegram") {
+    return (
+      <svg {...common}>
+        <path d="M21 4 3 11l5.5 2L19 6.5 10 14.5V19l3-3.2 4.5 3.2L21 4Z" />
+      </svg>
+    );
+  }
+
+  // Bale: chat bubble
+  return (
+    <svg {...common}>
+      <path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" />
+      <path d="M8.5 11h7" />
+    </svg>
+  );
+}
+
+function SocialIconRow({ className = "" }: { className?: string }) {
+  return (
+    <div className={`flex items-center gap-3 ${className}`}>
+      {socialLinks.map((item) => (
+        <a
+          key={item.key}
+          href={item.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={item.label}
+          title={item.label}
+          className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-gray-400 transition duration-200 hover:-translate-y-0.5 hover:border-[#39f77b]/50 hover:bg-[#39f77b]/10 hover:text-[#39f77b] hover:shadow-[0_8px_24px_-8px_rgba(57,247,123,0.5)]"
+        >
+          <SocialIcon name={item.key} />
+        </a>
+      ))}
+    </div>
+  );
+}
+
 const contactItems = {
   fa: [
     {
@@ -15,14 +81,8 @@ const contactItems = {
     {
       icon: "◎",
       title: "شبکه‌های اجتماعی",
-      value: "@electrocar",
+      value: "",
       description: "دنبال کردن آخرین مطالب و اخبار",
-    },
-    {
-      icon: "⌂",
-      title: "موقعیت",
-      value: "ایران",
-      description: "فعالیت محتوایی در حوزه خودروهای برقی",
     },
   ],
   en: [
@@ -35,14 +95,8 @@ const contactItems = {
     {
       icon: "◎",
       title: "Social media",
-      value: "@electrocar",
+      value: "",
       description: "Follow the latest content and news",
-    },
-    {
-      icon: "⌂",
-      title: "Location",
-      value: "Iran",
-      description: "Content activity in the field of electric cars",
     },
   ],
 };
@@ -91,6 +145,8 @@ const ui = {
     name: "نام و نام خانوادگی",
     namePh: "نام شما",
     email: "ایمیل",
+    phone: "شماره موبایل",
+    phonePh: "09123456789",
     subject: "موضوع",
     subjectPh: "موضوع پیام",
     message: "پیام",
@@ -112,6 +168,8 @@ const ui = {
     name: "Full name",
     namePh: "Your name",
     email: "Email",
+    phone: "Mobile number",
+    phonePh: "e.g. +98 912 345 6789",
     subject: "Subject",
     subjectPh: "Message subject",
     message: "Message",
@@ -175,7 +233,7 @@ export default function ContactContent() {
                 {contactItems[language].map((item) => (
                   <div
                     key={item.icon}
-                    className="rounded-2xl border border-white/10 bg-[#0b0f16] p-5"
+                    className="rounded-2xl border border-white/10 bg-[#091521] p-5"
                   >
                     <div className="flex items-center gap-4">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#39f77b]/10 text-xl text-[#39f77b]">
@@ -186,11 +244,15 @@ export default function ContactContent() {
                         <h3 className="font-bold">{item.title}</h3>
 
                         {/* bdi keeps "@handle" and emails from being reordered inside RTL text */}
-                        <p className="mt-1 text-sm text-[#39f77b]">
-                          <bdi>{item.value}</bdi>
-                        </p>
+                        {item.value && (
+                          <p className="mt-1 text-sm text-[#39f77b]">
+                            <bdi>{item.value}</bdi>
+                          </p>
+                        )}
                       </div>
                     </div>
+
+                    {!item.value && <SocialIconRow className="mt-4" />}
 
                     <p className="mt-4 text-sm text-gray-500">
                       {item.description}
@@ -201,7 +263,7 @@ export default function ContactContent() {
             </div>
 
             {/* Form */}
-            <div className="rounded-3xl border border-white/10 bg-[#0b0f16] p-6 sm:p-8">
+            <div className="rounded-3xl border border-white/10 bg-[#091521] p-6 sm:p-8">
               <div className="mb-7">
                 <p className="text-sm font-semibold text-[#39f77b]">
                   Send Message
@@ -237,6 +299,21 @@ export default function ContactContent() {
                       className={inputClass}
                     />
                   </div>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm text-gray-400">
+                    {t.phone}
+                  </label>
+
+                  <input
+                    type="tel"
+                    dir="ltr"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    placeholder={t.phonePh}
+                    className={`${inputClass} text-start`}
+                  />
                 </div>
 
                 <div>

@@ -55,6 +55,24 @@ function CloseIcon({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
+function UserIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" />
+    </svg>
+  );
+}
+
 function ArrowIcon({ className = "h-4 w-4" }: { className?: string }) {
   // Points to the "forward" side; flips automatically in RTL
   return (
@@ -366,28 +384,29 @@ export default function Header() {
                   />
                 </div>
 
-                {/* Desktop search trigger */}
+                {/* Desktop search trigger (icon only; press "/" to open) */}
                 <button
                   type="button"
                   onClick={() => setSearchOpen((value) => !value)}
                   aria-label={isFa ? "جستجو" : "Search"}
                   aria-expanded={searchOpen}
-                  className={`hidden h-10 w-10 items-center justify-center gap-2 rounded-full border transition-colors duration-200 sm:flex xl:w-44 xl:justify-start xl:px-3.5 ${
+                  className={`hidden h-10 w-10 items-center justify-center rounded-full border transition-colors duration-200 sm:flex ${
                     searchOpen
                       ? "border-[#39f77b]/40 bg-[#39f77b]/10 text-[#39f77b]"
                       : "border-white/10 bg-white/[0.03] text-gray-400 hover:border-[#39f77b]/30 hover:text-white"
                   }`}
                 >
-                  <SearchIcon className="h-[18px] w-[18px] shrink-0" />
-
-                  <span className="hidden flex-1 text-start text-[13px] xl:block">
-                    {isFa ? "جستجو..." : "Search..."}
-                  </span>
-
-                  <kbd className="hidden rounded-md border border-white/10 bg-white/5 px-1.5 py-0.5 font-sans text-[10px] text-gray-500 xl:block">
-                    /
-                  </kbd>
+                  <SearchIcon className="h-[18px] w-[18px]" />
                 </button>
+
+                {/* Desktop login button */}
+                <Link
+                  href="/login"
+                  className="hidden h-10 items-center gap-2 rounded-full bg-[#39f77b] px-4 text-sm font-bold text-[#031008] transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#39f77b] sm:flex"
+                >
+                  <UserIcon className="h-[18px] w-[18px]" />
+                  <span>{isFa ? "ورود" : "Login"}</span>
+                </Link>
 
                 {/* Mobile menu button */}
                 <button
@@ -532,6 +551,15 @@ export default function Header() {
                   labels={["فارسی", "English"]}
                   className="w-full"
                 />
+
+                {/* Login */}
+                <Link
+                  href="/login"
+                  className="flex items-center justify-center gap-2 rounded-xl bg-[#39f77b] py-3 text-sm font-bold text-[#031008] transition hover:brightness-110"
+                >
+                  <UserIcon className="h-[18px] w-[18px]" />
+                  {isFa ? "ورود" : "Login"}
+                </Link>
 
                 {/* Links */}
                 <nav
