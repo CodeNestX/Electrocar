@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import NewsSection from "@/components/NewsSection";
+import ArticlesSection from "@/components/ArticlesSection";
 import KnowledgeSection from "@/components/KnowledgeSection";
 import Footer from "@/components/Footer";
 
@@ -12,7 +12,7 @@ export default function Home() {
       <main>
         <Hero />
 
-        <NewsSection />
+        <ArticlesSection />
 
         <KnowledgeSection />
       </main>
