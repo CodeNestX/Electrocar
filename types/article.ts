@@ -1,12 +1,12 @@
 export interface Article {
   id: number;
+  category_translation_id: number;
   title: string;
   slug: string;
   excerpt: string;
-  content: string;
-  category: string;
-  image: string;
-  date: string;
-  readingTime: string;
-  author: string;
+  language: string;
+  status: string;
+  cover_url: string;
+  alt_text: string;
+  caption: string;
 }

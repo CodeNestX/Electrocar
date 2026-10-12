@@ -1,18 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import ArticleCardEn from "@/components/articles/ArticleCardEn";
-import { articlesEn, articleCategoriesEn } from "@/data/articlesEn";
+import { useLanguage } from "@/context/LanguageContext";
+import {getArticlesByLanguage} from "@/api/categoryService"
 
-// English version of the articles list.
-// Persian version: ArticlesPageFa.tsx (completely separate).
 export default function ArticlesPageEn() {
-  const [activeCategory, setActiveCategory] = useState("All");
+  const { language, dir } = useLanguage();
+  const [categories, setCategories] = useState<string[]>([]);
+  const [articles, setArticles] = useState<any[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
-  const filteredArticles =
-    activeCategory === "All"
-      ? articlesEn
-      : articlesEn.filter((article) => article.category === activeCategory);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        const catResponse = await getArticlesByLanguage(language);
+        const catData = catResponse.data.data || catResponse.data;
+        const fetchedCatNames = Array.isArray(catData) 
+          ? catData.map((c: any) => c.name || c) 
+          : [];
+
+        setCategories(fetchedCatNames);
+
+        if (fetchedCatNames.length > 0) {
+          setActiveCategory(fetchedCatNames[0]);
+        }
+
+        const artResponse = await axios.get("http://localhost:46329/articles");
+        setArticles(artResponse.data);
+
+      } catch (error: any) {
+        console.error("Error communicating with server:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const filteredArticles = Array.isArray(articles)
+    ? (activeCategory ? articles.filter((article) => article.category === activeCategory) : articles)
+    : [];
 
   return (
     <main dir="ltr" className="mx-auto min-h-[70vh] max-w-7xl px-4 py-12 text-left sm:px-6 lg:px-8">
@@ -28,9 +61,8 @@ export default function ArticlesPageEn() {
         </p>
       </div>
 
-      {/* Category filter */}
       <div className="mb-8 flex flex-wrap justify-center gap-3">
-        {articleCategoriesEn.map((category) => {
+        {categories.map((category) => {
           const isActive = activeCategory === category;
 
           return (
@@ -52,15 +84,16 @@ export default function ArticlesPageEn() {
 
       <div className="mb-6 flex items-center justify-between border-b border-white/10 pb-4">
         <h2 className="text-lg font-bold">
-          {activeCategory === "All" ? "All articles" : activeCategory}
+          {activeCategory || "Articles"}
         </h2>
         <span className="text-sm text-gray-400">
-          {filteredArticles.length}{" "}
-          {filteredArticles.length === 1 ? "article" : "articles"}
+          {filteredArticles.length} {filteredArticles.length === 1 ? "article" : "articles"}
         </span>
       </div>
 
-      {filteredArticles.length > 0 ? (
+      {loading ? (
+        <div className="py-20 text-center text-gray-400">Loading information from server...</div>
+      ) : filteredArticles.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredArticles.map((article) => (
             <ArticleCardEn key={article.id} article={article} />
@@ -71,13 +104,6 @@ export default function ArticlesPageEn() {
           <p className="text-gray-300">
             There are no articles in this category.
           </p>
-          <button
-            type="button"
-            onClick={() => setActiveCategory("All")}
-            className="mt-5 rounded-full bg-cyan-400 px-5 py-2 text-sm font-bold text-[#050b11] transition hover:bg-cyan-300"
-          >
-            Show all articles
-          </button>
         </div>
       )}
     </main>

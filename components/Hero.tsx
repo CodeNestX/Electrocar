@@ -18,7 +18,7 @@ const slides = [
         "The latest news, reviews, and technologies from the world of electric cars",
     },
     image:
-      "/images/hero-d1.png",
+      "/images/hero-d1.webp",
   },
   {
     fa: {
@@ -34,7 +34,7 @@ const slides = [
         "Discover the latest electric vehicle technologies and intelligent systems",
     },
     image:
-      "/images/hero-d2.png",
+      "/images/hero-d2.webp",
   },
   {
     fa: {
@@ -50,7 +50,7 @@ const slides = [
         "Get to know the world of electric cars better with ElectroCar",
     },
     image:
-      "/images/hero-d3.jpg",
+      "/images/hero-d3.webp",
   },
 ];
 
