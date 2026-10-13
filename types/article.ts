@@ -9,4 +9,9 @@ export interface Article {
   cover_url: string;
   alt_text: string;
   caption: string;
+  published_at:string;
+  category_slug : string
+  category : string;
+  reading_time_minutes : number;
+  created_at:string;
 }

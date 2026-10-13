@@ -1,4 +1,5 @@
-import { articles } from '@/data/articles';
+// import { articles } from '@/data/articles';
+import { getArticlesBySlug } from '@/api/categoryService';
 import ArticleView from '@/components/articles/ArticleView';
 import { notFound } from 'next/navigation';
 
@@ -12,11 +13,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
 
   // The slug is the same in Persian and English, so one check covers both.
-  const exists = articles.some((item) => item.slug === slug);
-  const myArticle = articles.filter((item)=> item.slug === slug)
-  if (!exists) {
+  const article =await getArticlesBySlug(slug)
+  if (!article) {
     notFound();
   }
 
-  return <ArticleView id={myArticle[0].id}  slug={slug} />;
+  return <ArticleView id={article.data.data.id}  slug={slug} article={article} />;
 }

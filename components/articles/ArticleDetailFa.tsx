@@ -2,21 +2,21 @@ import { articles } from '@/data/articles';
 import CommentSection from '@/components/CommentSection';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Article } from '@/types/article';
 
 // نسخه فارسی صفحه تک‌مقاله.
 // نسخه انگلیسی: ArticleDetailEn.tsx (کاملاً جدا)
-export default function ArticleDetailFa({ slug ,id }: { slug: string , id:number }) {
+export default function ArticleDetailFa({ article  }: { article:Article  }) {
   // پیدا کردن مقاله بر اساس slug
-  const article = articles.find((item: any) => item.slug === slug);
 
   if (!article) return null;
 
   const articleData = article as any;
 
   // گرفتن مقالات مرتبط
-  const relatedArticles = articles
-    .filter((item: any) => item.id !== article.id && item.slug !== slug)
-    .slice(0, 2);
+  // const relatedArticles = articles
+  //   .filter((item: any) => item.id !== article.id && item.slug !== slug)
+  //   .slice(0, 2);
 
   return (
     <main dir="rtl" className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8 dir-rtl text-right pt-[90px] sm:pt-[100px]">

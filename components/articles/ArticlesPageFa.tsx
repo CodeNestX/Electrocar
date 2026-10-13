@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ArticleCard from "@/components/ArticleCard";
 import { useLanguage } from "@/context/LanguageContext";
-import { getArticlesByLanguage, getArticlesByCategoryTranslationId } from "@/api/categoryService";
+import { getCategoryByLanguage, getArticlesByCategoryTranslationId } from "@/api/categoryService";
 
 export default function ArticlesPageFa() {
   const { language, dir } = useLanguage();
@@ -17,8 +17,8 @@ export default function ArticlesPageFa() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await getArticlesByLanguage(language);
-        const catData = res.data.data || res.data;
+        const res = await getCategoryByLanguage(language);
+        const catData = res.data.data;
         const fetchedCategories = Array.isArray(catData) ? catData : [];
 
         setCategories(fetchedCategories);
@@ -41,9 +41,11 @@ export default function ArticlesPageFa() {
 
       try {
         setLoading(true);
+        console.log(activeCategory)
         // ارسال شناسه یا category_id به بک‌اند
-        const categoryId = activeCategory.category_id || activeCategory.id;
+        const categoryId = activeCategory.id 
         const res = await getArticlesByCategoryTranslationId(categoryId);
+        console.log(res);
         const artData = res.data.data || res.data;
         
         setArticles(Array.isArray(artData) ? artData : []);
@@ -88,7 +90,7 @@ export default function ArticlesPageFa() {
               className={`rounded-full border px-5 py-2.5 text-sm transition-all duration-200 ${
                 isActive
                   ? "border-green-400 bg-green-400 text-[#050b11] font-bold shadow-lg shadow-cyan-400/20"
-                  : "border-white/10 bg-white/[0.03] text-gray-300 hover:border-green-400/60 hover:text-green-300"
+                  : "border-white/10 bg-white/3 text-gray-300 hover:border-green-400/60 hover:text-green-300"
               }`}
             >
               {category.name}
@@ -117,7 +119,7 @@ export default function ArticlesPageFa() {
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] py-16 text-center">
+        <div className="rounded-2xl border border-white/10 bg-white/3 py-16 text-center">
           <p className="text-gray-300">
             {language === "fa" ? "مقاله‌ای در این دسته‌بندی وجود ندارد." : "There are no articles in this category."}
           </p>

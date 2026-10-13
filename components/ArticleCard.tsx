@@ -1,3 +1,4 @@
+import { formatToShamsi } from "@/api/converDate";
 import { Article } from "@/types/article";
 
 interface ArticleCardProps {
@@ -14,12 +15,12 @@ export default function ArticleCard({
       <div className="relative h-56 overflow-hidden">
 
         <img
-          src={article.image}
-          alt={article.title}
+          src={article.cover_url}
+          alt={article.alt_text}
           className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-[#07121c] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#07121c] via-transparent to-transparent" />
 
         <span className="absolute bottom-4 right-4 rounded-full bg-[#39f77b] px-3 py-1.5 text-[11px] font-bold text-[#06100a]">
           {article.category}
@@ -31,9 +32,9 @@ export default function ArticleCard({
       <div className="p-5">
 
         <div className="mb-3 flex items-center gap-2 text-[11px] text-gray-500">
-          <span>{article.date}</span>
+          <span>{formatToShamsi(article.created_at.split("T")[0])}</span>
           <span>•</span>
-          <span>{article.readingTime} مطالعه</span>
+          <span>{article.reading_time_minutes} دقیقه مطالعه</span>
         </div>
 
         <h2 className="line-clamp-2 text-base font-bold leading-7 text-white transition group-hover:text-[#39f77b]">

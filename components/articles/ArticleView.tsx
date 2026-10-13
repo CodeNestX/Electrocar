@@ -3,11 +3,11 @@
 import { useEffect } from "react";
 import Header from "@/components/Header";
 import ArticleDetailFa from "@/components/articles/ArticleDetailFa";
-import ArticleDetailEn from "@/components/articles/ArticleDetailEn";
 import { useLanguage } from "@/context/LanguageContext";
+import { Article } from "@/types/article";
 
 // Header is shared; only the article body switches by language.
-export default function ArticleView({ slug, id }: { slug: string; id: number }) {
+export default function ArticleView({  id , article }: {  id: number; article:Article }) {
   const { language } = useLanguage();
 
   useEffect(() => {
@@ -29,11 +29,8 @@ export default function ArticleView({ slug, id }: { slug: string; id: number }) 
     <>
       <Header />
 
-      {language === "fa" ? (
-        <ArticleDetailFa id={id} slug={slug} />
-      ) : (
-        <ArticleDetailEn id={id} slug={slug} />
-      )}
+        <ArticleDetailFa article={article} />
+
     </>
   );
 }
