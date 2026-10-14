@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import ArticleCardEn from "@/components/articles/ArticleCardEn";
 import { useLanguage } from "@/context/LanguageContext";
-import { getCategoryByLanguage, getArticlesByCategoryTranslationId } from "@/api/categoryService";
+import { getCategoryByLanguage, getArticlesByCategoryTranslationId } from "@/api/services";
 
 export default function ArticlesPageEn() {
   const { language, dir } = useLanguage();

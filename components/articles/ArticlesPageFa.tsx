@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ArticleCard from "@/components/ArticleCard";
 import { useLanguage } from "@/context/LanguageContext";
-import { getCategoryByLanguage, getArticlesByCategoryTranslationId } from "@/api/categoryService";
+import { getCategoryByLanguage, getArticlesByCategoryTranslationId } from "@/api/services";
 
 export default function ArticlesPageFa() {
   const { language, dir } = useLanguage();

@@ -32,7 +32,7 @@ export default function ArticleCard({
       <div className="p-5">
 
         <div className="mb-3 flex items-center gap-2 text-[11px] text-gray-500">
-          <span>{formatToShamsi(article.created_at.split("T")[0])}</span>
+          <span>{formatToShamsi(article.created_at?.split("T")[0])}</span>
           <span>•</span>
           <span>{article.reading_time_minutes} دقیقه مطالعه</span>
         </div>

@@ -1,5 +1,5 @@
 // import { articles } from '@/data/articles';
-import { getArticlesBySlug } from '@/api/categoryService';
+import { getArticlesBySlug } from '@/api/services';
 import ArticleView from '@/components/articles/ArticleView';
 import { notFound } from 'next/navigation';
 

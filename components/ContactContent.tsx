@@ -70,6 +70,10 @@ function SocialIconRow({ className = "" }: { className?: string }) {
   );
 }
 
+function sendData() {
+
+}
+
 const contactItems = {
   fa: [
     {
@@ -343,6 +347,7 @@ export default function ContactContent() {
                 <button
                   type="button"
                   className="w-full rounded-xl bg-[#39f77b] px-6 py-3.5 font-bold text-black transition hover:bg-[#69ff9a]"
+                  onClick={() => sendData()}
                 >
                   {t.send}
                 </button>
