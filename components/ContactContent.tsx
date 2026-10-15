@@ -2,7 +2,53 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useState, type FormEvent } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:46329";
+
+// POST /contact  (backend: createContactMessage)
+// Required by the backend: name, subject, message and (mobile OR email).
+// The database column source_type is NOT NULL, so we always send one.
+type ContactPayload = {
+  name: string;
+  email: string;
+  mobile: string;
+  subject: string;
+  message: string;
+};
+
+type SendResult = { ok: boolean; status: number; message: string };
+
+async function sendContactMessage(data: ContactPayload): Promise<SendResult> {
+  try {
+    const res = await fetch(`${API_URL}/contact`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: data.name.trim(),
+        email: data.email.trim() || undefined,
+        mobile: data.mobile.trim() || undefined,
+        subject: data.subject.trim(),
+        message: data.message.trim(),
+        source_type: "contact_page",
+      }),
+    });
+
+    const json = await res.json().catch(() => ({}));
+
+    return { ok: res.ok, status: res.status, message: json?.message ?? "" };
+  } catch {
+    return { ok: false, status: 0, message: "" };
+  }
+}
+
+// Persian / Arabic digits -> latin (so "۰۹۱۲..." is accepted)
+function normalizeDigits(value: string) {
+  return value
+    .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
+    .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
+}
 
 // TODO: put your real account links here
 const socialLinks = [
@@ -68,10 +114,6 @@ function SocialIconRow({ className = "" }: { className?: string }) {
       ))}
     </div>
   );
-}
-
-function sendData() {
-
 }
 
 const contactItems = {
@@ -156,8 +198,16 @@ const ui = {
     message: "پیام",
     messagePh: "پیام خود را بنویسید...",
     send: "ارسال پیام",
-    formNote:
-      "فرم فعلاً نمایشی است و در مرحله بعد می‌توانیم آن را به ایمیل یا API متصل کنیم.",
+    formNote: "برای پاسخ‌گویی، حداقل یکی از فیلدهای ایمیل یا شماره موبایل را وارد کنید.",
+    sending: "در حال ارسال...",
+    success: "پیام شما با موفقیت ارسال شد. به زودی بررسی خواهد شد.",
+    errRequired: "نام، موضوع و متن پیام را وارد کنید.",
+    errContact: "ایمیل یا شماره موبایل را وارد کنید.",
+    errEmail: "ایمیل واردشده معتبر نیست.",
+    errPhone: "شماره موبایل معتبر نیست (مثال: 09123456789).",
+    errNetwork: "ارتباط با سرور برقرار نشد. اینترنت را بررسی کنید.",
+    errServer: "مشکلی در سرور رخ داد. بعداً دوباره تلاش کنید.",
+    errFallback: "ارسال پیام ناموفق بود. دوباره تلاش کنید.",
     faqTitle: "سوالات متداول",
   },
   en: {
@@ -179,8 +229,16 @@ const ui = {
     message: "Message",
     messagePh: "Write your message...",
     send: "Send message",
-    formNote:
-      "The form is currently a demo; in the next step we can connect it to email or an API.",
+    formNote: "Please enter at least one of email or mobile number so we can reply.",
+    sending: "Sending...",
+    success: "Your message was sent successfully. We will review it soon.",
+    errRequired: "Please enter your name, a subject and a message.",
+    errContact: "Please enter an email or a mobile number.",
+    errEmail: "The email address is not valid.",
+    errPhone: "The mobile number is not valid.",
+    errNetwork: "Can't reach the server. Check your connection.",
+    errServer: "Something went wrong on our side. Please try again later.",
+    errFallback: "Could not send the message. Please try again.",
     faqTitle: "Frequently asked questions",
   },
 };
@@ -191,6 +249,52 @@ const inputClass =
 export default function ContactContent() {
   const { language } = useLanguage();
   const t = ui[language];
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: "ok" | "error"; text: string } | null>(null);
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    if (sending) return;
+
+    const mobile = normalizeDigits(phone.trim()).replace(/[\s-]/g, "");
+    const mail = email.trim();
+
+    const fail = (text: string) => setFeedback({ type: "error", text });
+
+    if (!name.trim() || !subject.trim() || !message.trim()) return fail(t.errRequired);
+    if (!mail && !mobile) return fail(t.errContact);
+    if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) return fail(t.errEmail);
+    if (mobile && !/^(\+|00)?\d{10,14}$/.test(mobile)) return fail(t.errPhone);
+
+    setFeedback(null);
+    setSending(true);
+
+    const result = await sendContactMessage({ name, email: mail, mobile, subject, message });
+
+    setSending(false);
+
+    if (!result.ok) {
+      if (result.status === 0) return fail(t.errNetwork);
+      if (result.status >= 500) return fail(t.errServer);
+
+      // 4xx: the server's own message is Persian, so only show it on the Persian page
+      return fail(language === "fa" && result.message ? result.message : t.errFallback);
+    }
+
+    setFeedback({ type: "ok", text: t.success });
+    setName("");
+    setEmail("");
+    setPhone("");
+    setSubject("");
+    setMessage("");
+  };
 
   return (
     <>
@@ -278,7 +382,7 @@ export default function ContactContent() {
                 </h2>
               </div>
 
-              <form className="space-y-5">
+              <form onSubmit={handleSubmit} noValidate className="space-y-5">
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
                     <label className="mb-2 block text-sm text-gray-400">
@@ -287,6 +391,9 @@ export default function ContactContent() {
 
                     <input
                       type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      autoComplete="name"
                       placeholder={t.namePh}
                       className={inputClass}
                     />
@@ -299,6 +406,9 @@ export default function ContactContent() {
 
                     <input
                       type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      autoComplete="email"
                       placeholder="example@email.com"
                       className={inputClass}
                     />
@@ -315,6 +425,8 @@ export default function ContactContent() {
                     dir="ltr"
                     inputMode="tel"
                     autoComplete="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                     placeholder={t.phonePh}
                     className={`${inputClass} text-start`}
                   />
@@ -327,6 +439,8 @@ export default function ContactContent() {
 
                   <input
                     type="text"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
                     placeholder={t.subjectPh}
                     className={inputClass}
                   />
@@ -339,17 +453,32 @@ export default function ContactContent() {
 
                   <textarea
                     rows={6}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
                     placeholder={t.messagePh}
                     className="w-full resize-none rounded-xl border border-white/10 bg-[#080b10] px-4 py-3 text-sm leading-7 text-white outline-none transition placeholder:text-gray-700 focus:border-[#39f77b]/50"
                   />
                 </div>
 
+                {feedback && (
+                  <p
+                    role={feedback.type === "error" ? "alert" : "status"}
+                    className={`rounded-xl border px-4 py-3 text-sm ${
+                      feedback.type === "ok"
+                        ? "border-[#39f77b]/30 bg-[#39f77b]/10 text-[#39f77b]"
+                        : "border-red-500/30 bg-red-500/10 text-red-400"
+                    }`}
+                  >
+                    {feedback.text}
+                  </p>
+                )}
+
                 <button
-                  type="button"
-                  className="w-full rounded-xl bg-[#39f77b] px-6 py-3.5 font-bold text-black transition hover:bg-[#69ff9a]"
-                  onClick={() => sendData()}
+                  type="submit"
+                  disabled={sending}
+                  className="w-full rounded-xl bg-[#39f77b] px-6 py-3.5 font-bold text-black transition hover:bg-[#69ff9a] disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {t.send}
+                  {sending ? t.sending : t.send}
                 </button>
 
                 <p className="text-center text-xs text-gray-600">
