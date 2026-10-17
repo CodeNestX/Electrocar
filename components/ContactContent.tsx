@@ -36,7 +36,7 @@ async function sendContactMessage(data: ContactPayload): Promise<SendResult> {
     });
 
     const json = await res.json().catch(() => ({}));
-
+    
     return { ok: res.ok, status: res.status, message: json?.message ?? "" };
   } catch {
     return { ok: false, status: 0, message: "" };

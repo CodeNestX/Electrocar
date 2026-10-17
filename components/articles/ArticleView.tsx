@@ -11,6 +11,7 @@ export default function ArticleView({  id , article }: {  id: number; article:Ar
   const { language } = useLanguage();
 
   useEffect(() => {
+    console.log(article);
     if (!id) return;
 
     // ۱. دریافت آرایه قبلی از localStorage (در صورت وجود)
@@ -29,7 +30,7 @@ export default function ArticleView({  id , article }: {  id: number; article:Ar
     <>
       <Header />
 
-        <ArticleDetailFa article={article} />
+        <ArticleDetailFa slug={article.slug} article={article} />
 
     </>
   );

@@ -31,10 +31,11 @@ const assetUrl = (url?: string | null) =>
   !url ? "" : /^https?:\/\//.test(url) ? url : `${API_URL}${url.startsWith("/") ? "" : "/"}${url}`;
 
 async function getJson(path: string) {
+  console.log("ok");
+
   const res = await fetch(`${API_URL}${path}`);
 
   if (!res.ok) throw new Error(String(res.status));
-
   return res.json();
 }
 
@@ -188,10 +189,10 @@ export default function ArticleDetailFa({
   article: articleProp,
   slug: slugProp,
 }: {
-  article?: Article;
+  article: Article;
   slug?: string;
 }) {
-  const slug = articleProp?.slug ?? slugProp ?? "";
+  const slug = articleProp.slug;
 
   const [article, setArticle] = useState<Article | null>(articleProp ?? null);
   const [blocks, setBlocks] = useState<Block[]>([]);
@@ -199,9 +200,13 @@ export default function ArticleDetailFa({
   const [state, setState] = useState<"loading" | "ready" | "notfound" | "error">(
     articleProp ? "ready" : "loading"
   );
+useEffect(() => {
+    console.log("[ArticleDetailFa] mounted, slug =", slug, "API_URL =", API_URL);
 
-  useEffect(() => {
-    if (!slug) return;
+    if (!slug) {
+      console.warn("[ArticleDetailFa] slug is empty, nothing will be loaded");
+      return;
+    }
 
     let cancelled = false;
 
@@ -209,15 +214,27 @@ export default function ArticleDetailFa({
       try {
         const [articleJson, blocksJson] = await Promise.all([
           getJson(`/articles/slug/${encodeURIComponent(slug)}`),
-          getJson(`/articles/${encodeURIComponent(slug)}/blocks/slug`).catch(() => ({ data: [] })),
+          getJson(`/articles/${encodeURIComponent(slug)}/blocks/slug`).catch((e) => {
+            console.warn("[ArticleDetailFa] blocks request failed:", e);
+            return { data: [] };
+          }),
         ]);
+
+        console.log("[ArticleDetailFa] article response:", articleJson);
+        console.log("[ArticleDetailFa] blocks response:", blocksJson);
 
         if (cancelled) return;
 
         const found: Article | undefined = articleJson.data?.[0];
 
-        // draft articles are not shown to visitors
-        if (!found || found.status !== "published") {
+        if (!found) {
+          console.warn("[ArticleDetailFa] no article with this slug (or it has no cover image)");
+          setState("notfound");
+          return;
+        }
+
+        if (found.status !== "published") {
+          console.warn("[ArticleDetailFa] article status is", found.status, "- only 'published' is shown");
           setState("notfound");
           return;
         }
@@ -225,21 +242,8 @@ export default function ArticleDetailFa({
         setArticle(found);
         setBlocks(Array.isArray(blocksJson.data) ? blocksJson.data : []);
         setState("ready");
-
-        // Related: other published articles of the same category (this call also gives the category name)
-        getJson(`/articles/category_translation/${found.category_translation_id}`)
-          .then((json) => {
-            if (cancelled) return;
-
-            const list: Article[] = Array.isArray(json.data) ? json.data : [];
-
-            setArticle((current) =>
-              current ? { ...current, category: list[0]?.category ?? current.category } : current
-            );
-            setRelated(list.filter((item) => item.id !== found.id).slice(0, 2));
-          })
-          .catch(() => {});
-      } catch {
+      } catch (e) {
+        console.error("[ArticleDetailFa] request failed:", e);
         if (!cancelled) setState("error");
       }
     })();
